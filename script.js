@@ -1,6 +1,6 @@
-// デモ用ユーザー（c000000 / 123456 で入れる）
+// デモ用ユーザー（c000000 / 000000）
 const DUMMY_USERS = [
-  { studentId: "c000000", password: "123456", name: "デモ利用者" },
+  { studentId: "c000000", password: "000000", name: "デモ利用者" },
 ];
 
 // キャンパス一覧
@@ -11,10 +11,12 @@ const CAMPUSES = [
   { id: "tanabedori", name: "田辺通" },
 ];
 
-// 現在ログイン中ユーザー
 let currentUser = null;
-// 現在選択中キャンパス
 let currentCampusId = null;
+
+/* ---------------------------
+   共通ユーティリティ
+--------------------------- */
 
 // ページ切り替え
 function showPage(id) {
@@ -22,48 +24,24 @@ function showPage(id) {
   document.getElementById(id).classList.add("active");
 }
 
-// localStorageから予約を取得
+// localStorageから予約取得
 function loadReservations() {
   const raw = localStorage.getItem("reservations");
   return raw ? JSON.parse(raw) : [];
 }
 
-// localStorageに予約を保存
+// localStorageに予約保存
 function saveReservations(list) {
   localStorage.setItem("reservations", JSON.stringify(list));
 }
 
-// 指定日の予約一覧を表示
-function renderReservationList(dateStr, campusId) {
-  const listEl = document.getElementById("reservationList");
-  listEl.innerHTML = "";
-  if (!dateStr || !campusId) return;
-
-  const reservations = loadReservations().filter(r => {
-    return r.date === dateStr && r.campusId === campusId;
-  });
-
-  if (reservations.length === 0) {
-    listEl.innerHTML = "<li>予約はありません。</li>";
-    return;
-  }
-
-  reservations.sort((a, b) => a.start.localeCompare(b.start));
-
-  reservations.forEach(r => {
-    const li = document.createElement("li");
-    li.textContent = `${r.start} - ${r.end} (${r.userName})`;
-    listEl.appendChild(li);
-  });
-}
-
-// 時刻文字列("HH:MM")を分に
+// "HH:MM" → 分
 function timeToMinutes(t) {
   const [h, m] = t.split(":").map(Number);
   return h * 60 + m;
 }
 
-// 分を時刻文字列に
+// 分 → "HH:MM"
 function minutesToTime(mins) {
   const h = Math.floor(mins / 60);
   const m = mins % 60;
@@ -82,7 +60,7 @@ function isTimeAvailable(dateStr, campusId, start, endWithGap) {
   for (const r of reservations) {
     const s = timeToMinutes(r.start);
     const e = timeToMinutes(r.end);
-    // 重なったら不可
+    // 時間が重なっていたらNG
     if (newStart < e && s < newEnd) {
       return false;
     }
@@ -90,8 +68,80 @@ function isTimeAvailable(dateStr, campusId, start, endWithGap) {
   return true;
 }
 
+// 指定日の予約一覧表示
+function renderReservationList(dateStr, campusId) {
+  const listEl = document.getElementById("reservationList");
+  listEl.innerHTML = "";
+  if (!dateStr || !campusId) return;
+
+  const reservations = loadReservations().filter(r => {
+    return r.date === dateStr && r.campusId === campusId;
+  });
+
+  if (reservations.length === 0) {
+    listEl.innerHTML = "<li>予約はありません。</li>";
+    return;
+  }
+
+  // 開始時刻順に並べる
+  reservations.sort((a, b) => a.start.localeCompare(b.start));
+
+  reservations.forEach(r => {
+    const li = document.createElement("li");
+    li.textContent = `${r.start} - ${r.end} (${r.userName})`;
+    listEl.appendChild(li);
+  });
+}
+
+/* ---------------------------
+   時刻セレクト関連
+--------------------------- */
+
+// 15分刻みでselectを生成
+function populateTimeSelects() {
+  const startSel = document.getElementById("startTime");
+  const endSel = document.getElementById("endTimeUser");
+  startSel.innerHTML = "";
+  endSel.innerHTML = "";
+
+  for (let h = 0; h < 24; h++) {
+    for (let m = 0; m < 60; m += 15) {
+      const t = `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+      const opt1 = document.createElement("option");
+      const opt2 = document.createElement("option");
+      opt1.value = opt2.value = t;
+      opt1.textContent = opt2.textContent = t;
+      startSel.appendChild(opt1);
+      endSel.appendChild(opt2);
+    }
+  }
+}
+
+// 終了時刻を開始時刻より後だけ選べるようにする
+function limitEndTimes() {
+  const startSel = document.getElementById("startTime");
+  const endSel = document.getElementById("endTimeUser");
+  const startVal = startSel.value;
+  const startMin = timeToMinutes(startVal);
+
+  Array.from(endSel.options).forEach(opt => {
+    const endMin = timeToMinutes(opt.value);
+    // 開始と同じか前の時刻は選べない
+    opt.disabled = endMin <= startMin;
+  });
+
+  // もし無効な時間を選んでたらクリア
+  if (endSel.value && timeToMinutes(endSel.value) <= startMin) {
+    endSel.value = "";
+  }
+}
+
+/* ---------------------------
+   初期化
+--------------------------- */
+
 window.addEventListener("DOMContentLoaded", () => {
-  // キャンパス選択に反映
+  // キャンパスをselectに入れる
   const campusSelect = document.getElementById("campusSelect");
   CAMPUSES.forEach(c => {
     const opt = document.createElement("option");
@@ -100,7 +150,13 @@ window.addEventListener("DOMContentLoaded", () => {
     campusSelect.appendChild(opt);
   });
 
-  // ログイン
+  // 15分刻みの時間selectを用意
+  populateTimeSelects();
+
+  // 開始時刻を変えたら終了側を制限
+  document.getElementById("startTime").addEventListener("change", limitEndTimes);
+
+  // ログイン処理
   document.getElementById("btnLogin").addEventListener("click", () => {
     const sid = document.getElementById("studentId").value.trim();
     const pw = document.getElementById("password").value.trim();
@@ -115,17 +171,16 @@ window.addEventListener("DOMContentLoaded", () => {
 
     currentUser = found;
     msg.textContent = "";
-    // ここで学籍番号を表示
     document.getElementById("loginUser").textContent =
       `${found.name} / 学籍番号: ${found.studentId}`;
     showPage("page-campus");
   });
 
-  // キャンパスから次へ
+  // キャンパス選択 → 日時ページへ
   document.getElementById("btnCampusNext").addEventListener("click", () => {
     currentCampusId = document.getElementById("campusSelect").value;
     showPage("page-reserve");
-    // 日付を今日に
+    // 日付は今日を入れておく
     const today = new Date().toISOString().slice(0, 10);
     document.getElementById("reserveDate").value = today;
     renderReservationList(today, currentCampusId);
@@ -144,13 +199,13 @@ window.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // 30分追加
+    // 30分追加して実際のブロック終了にする
     const endUserMin = timeToMinutes(endUser);
     const endWithGap = minutesToTime(endUserMin + 30);
 
     const ok = isTimeAvailable(date, currentCampusId, start, endWithGap);
     if (ok) {
-      result.textContent = `予約できます。（終了として扱う時間: ${endWithGap}）`;
+      result.textContent = `予約できます。（終了扱い時間: ${endWithGap}）`;
       result.className = "message ok";
     } else {
       result.textContent = "すでに予約があります。別の時間にしてください。";
@@ -158,7 +213,7 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // 予約する
+  // 予約確定
   document.getElementById("btnReserve").addEventListener("click", () => {
     const date = document.getElementById("reserveDate").value;
     const start = document.getElementById("startTime").value;
@@ -176,7 +231,6 @@ window.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // 30分追加
     const endUserMin = timeToMinutes(endUser);
     const endWithGap = minutesToTime(endUserMin + 30);
 
@@ -203,7 +257,7 @@ window.addEventListener("DOMContentLoaded", () => {
     renderReservationList(date, currentCampusId);
   });
 
-  // 日付を切り替えたら一覧更新
+  // 日付切り替え時に一覧を更新
   document.getElementById("reserveDate").addEventListener("change", (e) => {
     if (currentCampusId) {
       renderReservationList(e.target.value, currentCampusId);
