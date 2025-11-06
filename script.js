@@ -1,6 +1,7 @@
 // デモ用ユーザー（c000000 / 000000）
 const DUMMY_USERS = [
-  { studentId: "c000000", password: "000000", name: "デモ利用者" },
+  // 実際はログイン後にここから名前をセットする
+  { studentId: "c000000", password: "000000", name: "名古屋 太郎" },
 ];
 
 // キャンパス一覧
@@ -14,41 +15,33 @@ const CAMPUSES = [
 let currentUser = null;
 let currentCampusId = null;
 
-/* ---------------------------
-   共通ユーティリティ
---------------------------- */
-
-// ページ切り替え
+/* ===== 共通処理 ===== */
 function showPage(id) {
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
   document.getElementById(id).classList.add("active");
 }
 
-// localStorageから予約取得
 function loadReservations() {
   const raw = localStorage.getItem("reservations");
   return raw ? JSON.parse(raw) : [];
 }
 
-// localStorageに予約保存
 function saveReservations(list) {
   localStorage.setItem("reservations", JSON.stringify(list));
 }
 
-// "HH:MM" → 分
 function timeToMinutes(t) {
   const [h, m] = t.split(":").map(Number);
   return h * 60 + m;
 }
 
-// 分 → "HH:MM"
 function minutesToTime(mins) {
   const h = Math.floor(mins / 60);
   const m = mins % 60;
   return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
 }
 
-// 重複チェック
+// 同日同キャンパスで重複していないか
 function isTimeAvailable(dateStr, campusId, start, endWithGap) {
   const reservations = loadReservations().filter(r => {
     return r.date === dateStr && r.campusId === campusId;
@@ -60,7 +53,6 @@ function isTimeAvailable(dateStr, campusId, start, endWithGap) {
   for (const r of reservations) {
     const s = timeToMinutes(r.start);
     const e = timeToMinutes(r.end);
-    // 時間が重なっていたらNG
     if (newStart < e && s < newEnd) {
       return false;
     }
@@ -68,7 +60,6 @@ function isTimeAvailable(dateStr, campusId, start, endWithGap) {
   return true;
 }
 
-// 指定日の予約一覧表示
 function renderReservationList(dateStr, campusId) {
   const listEl = document.getElementById("reservationList");
   listEl.innerHTML = "";
@@ -83,9 +74,7 @@ function renderReservationList(dateStr, campusId) {
     return;
   }
 
-  // 開始時刻順に並べる
   reservations.sort((a, b) => a.start.localeCompare(b.start));
-
   reservations.forEach(r => {
     const li = document.createElement("li");
     li.textContent = `${r.start} - ${r.end} (${r.userName})`;
@@ -93,11 +82,7 @@ function renderReservationList(dateStr, campusId) {
   });
 }
 
-/* ---------------------------
-   時刻セレクト関連
---------------------------- */
-
-// 15分刻みでselectを生成
+/* ===== 15分刻みのselect生成 ===== */
 function populateTimeSelects() {
   const startSel = document.getElementById("startTime");
   const endSel = document.getElementById("endTimeUser");
@@ -117,7 +102,7 @@ function populateTimeSelects() {
   }
 }
 
-// 終了時刻を開始時刻より後だけ選べるようにする
+// 終了時刻は開始より後だけ
 function limitEndTimes() {
   const startSel = document.getElementById("startTime");
   const endSel = document.getElementById("endTimeUser");
@@ -126,22 +111,17 @@ function limitEndTimes() {
 
   Array.from(endSel.options).forEach(opt => {
     const endMin = timeToMinutes(opt.value);
-    // 開始と同じか前の時刻は選べない
     opt.disabled = endMin <= startMin;
   });
 
-  // もし無効な時間を選んでたらクリア
   if (endSel.value && timeToMinutes(endSel.value) <= startMin) {
     endSel.value = "";
   }
 }
 
-/* ---------------------------
-   初期化
---------------------------- */
-
+/* ===== 初期化 ===== */
 window.addEventListener("DOMContentLoaded", () => {
-  // キャンパスをselectに入れる
+  // キャンパスセレクト
   const campusSelect = document.getElementById("campusSelect");
   CAMPUSES.forEach(c => {
     const opt = document.createElement("option");
@@ -150,11 +130,27 @@ window.addEventListener("DOMContentLoaded", () => {
     campusSelect.appendChild(opt);
   });
 
-  // 15分刻みの時間selectを用意
+  // 時刻セレクト
   populateTimeSelects();
-
-  // 開始時刻を変えたら終了側を制限
   document.getElementById("startTime").addEventListener("change", limitEndTimes);
+
+  // ハンバーガー
+  const menuBtn = document.getElementById("menuBtn");
+  const sideMenu = document.getElementById("sideMenu");
+  const overlay = document.getElementById("overlay");
+  const closeMenu = document.getElementById("closeMenu");
+
+  function openMenu() {
+    sideMenu.classList.add("open");
+    overlay.classList.add("show");
+  }
+  function closeMenuFn() {
+    sideMenu.classList.remove("open");
+    overlay.classList.remove("show");
+  }
+  menuBtn.addEventListener("click", openMenu);
+  closeMenu.addEventListener("click", closeMenuFn);
+  overlay.addEventListener("click", closeMenuFn);
 
   // ログイン処理
   document.getElementById("btnLogin").addEventListener("click", () => {
@@ -171,16 +167,14 @@ window.addEventListener("DOMContentLoaded", () => {
 
     currentUser = found;
     msg.textContent = "";
-    document.getElementById("loginUser").textContent =
-      `${found.name} / 学籍番号: ${found.studentId}`;
+    document.getElementById("sideUserName").textContent = `${found.name}`;
     showPage("page-campus");
   });
 
-  // キャンパス選択 → 日時ページへ
+  // キャンパスから日時へ
   document.getElementById("btnCampusNext").addEventListener("click", () => {
     currentCampusId = document.getElementById("campusSelect").value;
     showPage("page-reserve");
-    // 日付は今日を入れておく
     const today = new Date().toISOString().slice(0, 10);
     document.getElementById("reserveDate").value = today;
     renderReservationList(today, currentCampusId);
@@ -199,7 +193,6 @@ window.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // 30分追加して実際のブロック終了にする
     const endUserMin = timeToMinutes(endUser);
     const endWithGap = minutesToTime(endUserMin + 30);
 
@@ -213,7 +206,7 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // 予約確定
+  // 予約する
   document.getElementById("btnReserve").addEventListener("click", () => {
     const date = document.getElementById("reserveDate").value;
     const start = document.getElementById("startTime").value;
@@ -257,7 +250,7 @@ window.addEventListener("DOMContentLoaded", () => {
     renderReservationList(date, currentCampusId);
   });
 
-  // 日付切り替え時に一覧を更新
+  // 日付切替
   document.getElementById("reserveDate").addEventListener("change", (e) => {
     if (currentCampusId) {
       renderReservationList(e.target.value, currentCampusId);
