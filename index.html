@@ -9,7 +9,7 @@
 <body>
   <!-- 上部バー -->
   <header class="topbar">
-    <button id="menuBtn" class="icon-btn" aria-label="menu">
+    <button id="menuBtn" class="icon-btn" aria-label="メニューを開く">
       ☰
     </button>
     <h1 class="app-title">キャンパスカーシェア予約</h1>
@@ -20,30 +20,52 @@
   <aside id="sideMenu" class="side-menu">
     <div class="side-menu-header">
       <div class="user-name" id="sideUserName">ログインしていません</div>
-      <button id="closeMenu" class="icon-btn">×</button>
+      <button id="closeMenu" class="icon-btn" aria-label="メニューを閉じる">×</button>
     </div>
-    <ul class="side-menu-list">
-      <li>マイページ（ダミー）</li>
-      <li>予約一覧（この画面の下部に表示）</li>
-      <li>ログアウトはリロードしてください</li>
-    </ul>
+    <div class="side-menu-content">
+      <div class="side-menu-block">
+        <h3 class="side-menu-heading">メニュー</h3>
+        <ul class="side-menu-list">
+          <li>マイページ（ダミー）</li>
+          <li>ログアウトはリロードしてください</li>
+        </ul>
+      </div>
+      <div class="side-menu-block">
+        <h3 class="side-menu-heading">予約一覧</h3>
+        <ul id="sideReservationList" class="side-reservations" aria-live="polite">
+          <li>まだ予約がありません。</li>
+        </ul>
+      </div>
+    </div>
   </aside>
   <div id="overlay" class="overlay"></div>
 
   <!-- ログイン画面 -->
   <main id="page-login" class="page active">
-    <div class="card">
+    <form id="loginForm" class="card">
       <h2>ログイン</h2>
       <p class="note">学籍番号とパスワードを入力してください。</p>
       <label>学籍番号
-        <input type="text" id="studentId" placeholder="例: c000000" />
+        <input
+          type="text"
+          id="studentId"
+          placeholder="例: c000000"
+          autocomplete="username"
+          required
+        />
       </label>
       <label>パスワード
-        <input type="password" id="password" placeholder="例: 000000" />
+        <input
+          type="password"
+          id="password"
+          placeholder="例: 000000"
+          autocomplete="current-password"
+          required
+        />
       </label>
-      <button id="btnLogin" class="btn primary">ログイン</button>
+      <button id="btnLogin" type="submit" class="btn primary">ログイン</button>
       <p id="loginMessage" class="message"></p>
-    </div>
+    </form>
   </main>
 
   <!-- キャンパス選択 -->
@@ -71,25 +93,53 @@
 
   <!-- 日時選択 -->
   <main id="page-reserve" class="page">
-    <div class="card">
-      <h2>利用日時を選択</h2>
-      <p class="note">終了時刻のあと30分は自動でブロックされます。</p>
-      <label>日付
-        <input type="date" id="reserveDate" />
-      </label>
-      <label>開始時刻
-        <select id="startTime"></select>
-      </label>
-      <label>終了時刻（利用する時間の終わり）
-        <select id="endTimeUser"></select>
-      </label>
-      <button id="btnCheck" class="btn">空き状況を確認</button>
-      <div id="checkResult" class="message"></div>
-      <button id="btnReserve" class="btn primary">この内容で予約</button>
-      <p id="reserveMessage" class="message"></p>
-
-      <h3>その日の予約一覧</h3>
-      <ul id="reservationList" class="list"></ul>
+    <div class="card schedule-card">
+      <div class="schedule-header">
+        <button id="btnBackToCampus" type="button" class="link-btn">← キャンパスを選び直す</button>
+        <div class="schedule-chip" aria-live="polite">
+          <span id="reserveCampusName" class="chip-name">キャンパス未選択</span>
+          <span id="reserveCampusDistance" class="chip-distance"></span>
+        </div>
+      </div>
+      <div class="schedule-intro">
+        <h2>利用日時を選択</h2>
+        <p class="note">終了時刻のあと30分は自動でブロックされます。</p>
+      </div>
+      <div class="schedule-layout">
+        <section id="reserveCampusSummary" class="schedule-summary" aria-live="polite">
+          <p class="schedule-summary-empty">キャンパス情報がここに表示されます。</p>
+        </section>
+        <section class="schedule-fields">
+          <div class="field">
+            <label>
+              <span class="field-label">日付</span>
+              <input type="date" id="reserveDate" />
+            </label>
+          </div>
+          <div class="field field-group">
+            <label>
+              <span class="field-label">開始時刻</span>
+              <select id="startTime"></select>
+            </label>
+            <label>
+              <span class="field-label">終了時刻（利用する時間の終わり）</span>
+              <select id="endTimeUser"></select>
+            </label>
+          </div>
+          <div class="field">
+            <button id="btnCheck" type="button" class="btn">空き状況を確認</button>
+            <div id="checkResult" class="message"></div>
+          </div>
+          <div class="field">
+            <button id="btnReserve" type="button" class="btn primary">この内容で予約</button>
+            <div id="reserveMessage" class="message"></div>
+          </div>
+        </section>
+      </div>
+      <section class="schedule-reservations">
+        <h3>その日の予約一覧</h3>
+        <ul id="reservationList" class="list"></ul>
+      </section>
     </div>
   </main>
 
