@@ -6,14 +6,67 @@ const DUMMY_USERS = [
 
 // キャンパス一覧
 const CAMPUSES = [
-  { id: "takiko", name: "滝子" },
-  { id: "sakurayama", name: "桜山" },
-  { id: "kitachikusa", name: "北千種" },
-  { id: "tanabedori", name: "田辺通" },
+  {
+    id: "takiko",
+    name: "滝子キャンパス",
+    image: "img/takiko.jpg",
+    badge: "本部キャンパス",
+    ribbon: "新しい車両が利用できます",
+    distance: "中心部から 1.2km",
+    address: "昭和区滝子町 1-1",
+    features: ["24時間利用可", "EV 2台常備", "スタッフ常駐"],
+    availabilityLabel: "本日の空き状況",
+    availabilityValue: "車両数 5台",
+    rating: "4.8",
+    reviews: 132,
+  },
+  {
+    id: "sakurayama",
+    name: "桜山キャンパス",
+    image: "img/sakurayama.jpg",
+    badge: "医療系",
+    ribbon: "病院に直結しています",
+    distance: "桜山駅から 徒歩 3分",
+    address: "瑞穂区瑞穂通 1-2",
+    features: ["キャンパス間送迎", "充電スポット完備", "車内Wi-Fi"],
+    availabilityLabel: "ピーク前料金",
+    availabilityValue: "車両数 3台",
+    rating: "4.7",
+    reviews: 98,
+  },
+  {
+    id: "kitachikusa",
+    name: "北千種キャンパス",
+    image: "img/kitachikusa.jpg",
+    badge: "芸術系",
+    ribbon: "夜間の利用が人気です",
+    distance: "今池駅から バス 8分",
+    address: "千種区北千種 2-10",
+    features: ["大型車利用可", "照明付き駐車場", "入門ゲート24h"],
+    availabilityLabel: "学生割適用中",
+    availabilityValue: "車両数 4台",
+    rating: "4.6",
+    reviews: 86,
+  },
+  {
+    id: "tanabe",
+    name: "田辺通キャンパス",
+    image: "img/tanabe.jpg",
+    badge: "教育系",
+    ribbon: "朝の予約がしやすい",
+    distance: "八事駅から 徒歩 5分",
+    address: "昭和区田辺通 3-5",
+    features: ["屋根付き駐車場", "チャイルドシート常備", "ICカード解錠"],
+    availabilityLabel: "おすすめ枠",
+    availabilityValue: "車両数 2台",
+    rating: "4.5",
+    reviews: 74,
+  },
 ];
 
 let currentUser = null;
 let currentCampusId = null;
+let selectedCampusId = null;
 
 /* ===== 共通処理 ===== */
 function showPage(id) {
@@ -120,15 +173,85 @@ function limitEndTimes() {
 }
 
 /* ===== 初期化 ===== */
+function createCampusCard(campus) {
+  const card = document.createElement("article");
+  card.className = "campus-card";
+  card.setAttribute("role", "listitem");
+  card.setAttribute("tabindex", "0");
+  card.dataset.id = campus.id;
+  card.innerHTML = `
+    <div class="campus-image">
+      <img src="${campus.image}" alt="${campus.name}の写真" loading="lazy" />
+      <span class="campus-ribbon">${campus.ribbon}</span>
+    </div>
+    <div class="campus-card-body">
+      <div class="campus-card-header">
+        <span class="campus-badge">${campus.badge}</span>
+        <div class="campus-rating">
+          <span class="star">★</span>
+          <span>${campus.rating}</span>
+          <span class="reviews">(${campus.reviews}件)</span>
+        </div>
+      </div>
+      <h3>${campus.name}</h3>
+      <p class="campus-distance">${campus.distance} · ${campus.address}</p>
+      <ul class="campus-features">
+        ${campus.features.map(f => `<li>${f}</li>`).join("")}
+      </ul>
+      <div class="campus-footer">
+        <div class="campus-availability">
+          <span class="availability-label">${campus.availabilityLabel}</span>
+          <span class="availability-value">${campus.availabilityValue}</span>
+        </div>
+        <div class="campus-action">タップして選択</div>
+      </div>
+    </div>
+  `;
+  return card;
+}
+
+function updateSelectedCampusDisplay() {
+  const selectedText = document.getElementById("selectedCampus");
+  const nextBtn = document.getElementById("btnCampusNext");
+  if (!selectedCampusId) {
+    selectedText.textContent = "キャンパスをまだ選択していません。";
+    nextBtn.disabled = true;
+    return;
+  }
+  const campus = CAMPUSES.find(c => c.id === selectedCampusId);
+  if (campus) {
+    selectedText.textContent = `${campus.name}を選択中です。`;
+    nextBtn.disabled = false;
+  }
+}
+
+function selectCampus(card) {
+  document
+    .querySelectorAll(".campus-card.selected")
+    .forEach(el => el.classList.remove("selected"));
+  card.classList.add("selected");
+  selectedCampusId = card.dataset.id;
+  updateSelectedCampusDisplay();
+}
+
 window.addEventListener("DOMContentLoaded", () => {
-  // キャンパスセレクト
-  const campusSelect = document.getElementById("campusSelect");
-  CAMPUSES.forEach(c => {
-    const opt = document.createElement("option");
-    opt.value = c.id;
-    opt.textContent = c.name;
-    campusSelect.appendChild(opt);
+  const campusList = document.getElementById("campusList");
+  campusList.setAttribute("aria-describedby", "selectedCampus");
+  CAMPUSES.forEach(campus => {
+    const card = createCampusCard(campus);
+    campusList.appendChild(card);
+
+    card.addEventListener("click", () => {
+      selectCampus(card);
+    });
+    card.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        selectCampus(card);
+      }
+    });
   });
+  updateSelectedCampusDisplay();
 
   // 時刻セレクト
   populateTimeSelects();
@@ -173,7 +296,8 @@ window.addEventListener("DOMContentLoaded", () => {
 
   // キャンパスから日時へ
   document.getElementById("btnCampusNext").addEventListener("click", () => {
-    currentCampusId = document.getElementById("campusSelect").value;
+    if (!selectedCampusId) return;
+    currentCampusId = selectedCampusId;
     showPage("page-reserve");
     const today = new Date().toISOString().slice(0, 10);
     document.getElementById("reserveDate").value = today;
