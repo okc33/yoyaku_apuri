@@ -41,11 +41,17 @@
   <div id="overlay" class="overlay"></div>
 
   <!-- ログイン画面 -->
-  <main id="page-login" class="page active">
-    <form id="loginForm" class="card">
-      <h2>ログイン</h2>
-      <p class="note">学籍番号とパスワードを入力してください。</p>
-      <label>学籍番号
+  <main id="page-login" class="page active login-page">
+    <div class="login-wrapper">
+      <form id="loginForm" class="card login-card">
+        <div class="login-brand">
+          <img src="img/logo.png" alt="NISSIN GROUP" class="login-logo" />
+        </div>
+        <h2 class="login-title">ログイン</h2>
+        <p class="login-description">
+         学籍番号とパスワードを入力してください。
+        </p>
+        <label for="studentId" class="login-label">学籍番号</label>
         <input
           type="text"
           id="studentId"
@@ -53,19 +59,26 @@
           autocomplete="username"
           required
         />
-      </label>
-      <label>パスワード
-        <input
-          type="password"
-          id="password"
-          placeholder="例: 000000"
-          autocomplete="current-password"
-          required
-        />
-      </label>
-      <button id="btnLogin" type="submit" class="btn primary">ログイン</button>
-      <p id="loginMessage" class="message"></p>
-    </form>
+     <label for="password" class="login-label">パスワード</label>
+        <div class="login-password-field">
+          <input
+            type="password"
+            id="password"
+            placeholder="例: 000000"
+            autocomplete="current-password"
+            required
+          />
+          <span class="login-password-icon" aria-hidden="true">👁</span>
+        </div>
+        <a href="#" class="login-link">パスワードをお忘れですか？</a>
+        <button id="btnLogin" type="submit" class="btn primary login-submit">続ける</button>
+        <p id="loginMessage" class="message"></p>
+        <p class="login-footer">
+          アカウントが未登録ですか？
+          <a href="#" class="login-link">アカウントの作成</a>
+        </p>
+      </form>
+    </div>
   </main>
 
   <!-- キャンパス選択 -->
