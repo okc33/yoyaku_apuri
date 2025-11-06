@@ -1,8 +1,8 @@
 :root {
-  --bg: #f5f6f8;
+  --bg: #f3f4f6;
   --card: #fff;
-  --border: #d5d7dd;
-  --text: #333;
+  --border: #d1d5db;
+  --text: #111827;
   --accent: #2563eb;
   --danger: #b91c1c;
 }
@@ -16,32 +16,104 @@ body {
   background: var(--bg);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   color: var(--text);
+  min-height: 100vh;
 }
 
+/* top bar */
 .topbar {
+  height: 50px;
   background: #fff;
   border-bottom: 1px solid var(--border);
-  padding: 0.7rem 1rem;
+  display: flex;
+  align-items: center;
+  padding: 0 0.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.icon-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0.25rem 0.5rem;
+}
+
+.app-title {
+  font-size: 1rem;
+  margin-left: 0.5rem;
+}
+
+.spacer {
+  flex: 1;
+}
+
+/* side menu */
+.side-menu {
+  position: fixed;
+  top: 0;
+  left: -240px;
+  width: 240px;
+  height: 100%;
+  background: #fff;
+  border-right: 1px solid var(--border);
+  z-index: 30;
+  transition: left 0.2s ease-out;
+  display: flex;
+  flex-direction: column;
+}
+
+.side-menu.open {
+  left: 0;
+}
+
+.side-menu-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 0.8rem 0.8rem;
+  border-bottom: 1px solid var(--border);
 }
 
-.topbar h1 {
-  font-size: 1rem;
+.user-name {
+  font-weight: 600;
+}
+
+.side-menu-list {
+  list-style: none;
+  padding: 0.8rem;
   margin: 0;
+  font-size: 0.85rem;
 }
 
-.login-user {
-  font-size: 0.8rem;
-  color: #666;
+.side-menu-list li {
+  padding: 0.4rem 0;
+  border-bottom: 1px solid #f3f4f6;
 }
 
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.25);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 25;
+  transition: opacity 0.2s ease-out;
+}
+
+.overlay.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* pages */
 .page {
   display: none;
-  max-width: 640px;
-  margin: 1.5rem auto;
-  padding: 0 1rem;
+  max-width: 700px;
+  margin: 1.2rem auto;
+  padding: 0 1rem 2.5rem;
 }
 
 .page.active {
@@ -51,13 +123,14 @@ body {
 .card {
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: 0.5rem;
-  padding: 1.2rem;
+  border-radius: 0.75rem;
+  padding: 1.2rem 1rem 1.3rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
 h2 {
   margin-top: 0;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
 }
 
 label {
@@ -69,10 +142,11 @@ label {
 input, select {
   width: 100%;
   padding: 0.45rem 0.5rem;
-  margin-top: 0.3rem;
+  margin-top: 0.35rem;
   border: 1px solid var(--border);
-  border-radius: 0.3rem;
+  border-radius: 0.5rem;
   font-size: 0.9rem;
+  background: #fff;
 }
 
 .btn {
@@ -80,11 +154,11 @@ input, select {
   padding: 0.5rem 0.9rem;
   border: 1px solid var(--border);
   background: #fff;
-  border-radius: 0.3rem;
+  border-radius: 0.5rem;
   cursor: pointer;
   font-size: 0.9rem;
   margin-right: 0.4rem;
-  margin-top: 0.4rem;
+  margin-top: 0.5rem;
 }
 
 .btn.primary {
@@ -93,14 +167,9 @@ input, select {
   border: 1px solid var(--accent);
 }
 
-.btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
 .note {
   font-size: 0.75rem;
-  color: #555;
+  color: #6b7280;
   margin-bottom: 0.7rem;
 }
 
@@ -121,16 +190,17 @@ input, select {
   list-style: none;
   padding: 0;
   margin-top: 0.7rem;
+  border-top: 1px solid #e5e7eb;
 }
 
 .list li {
-  border-bottom: 1px solid #eee;
-  padding: 0.4rem 0;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 0.45rem 0;
   font-size: 0.8rem;
 }
 
-@media (max-width: 480px) {
-  .card {
-    padding: 1rem 0.8rem;
+@media (min-width: 768px) {
+  .app-title {
+    font-size: 1.05rem;
   }
 }
