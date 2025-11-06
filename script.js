@@ -12,7 +12,7 @@ const CAMPUSES = [
     image: "img/takiko.jpg",
     badge: "本部キャンパス",
     ribbon: "新しい車両が利用できます",
-    distance: "中心部から 1.2km",
+    distance: "現在地から0.1km",
     address: "昭和区滝子町 1-1",
     features: ["24時間利用可", "EV 2台常備", "スタッフ常駐"],
     availabilityLabel: "本日の空き状況",
@@ -26,7 +26,7 @@ const CAMPUSES = [
     image: "img/sakurayama.jpg",
     badge: "医療系",
     ribbon: "病院に直結しています",
-    distance: "桜山駅から 徒歩 3分",
+    distance: "現在地から0.8km",
     address: "瑞穂区瑞穂通 1-2",
     features: ["キャンパス間送迎", "充電スポット完備", "車内Wi-Fi"],
     availabilityLabel: "ピーク前料金",
@@ -35,26 +35,12 @@ const CAMPUSES = [
     reviews: 98,
   },
   {
-    id: "kitachikusa",
-    name: "北千種キャンパス",
-    image: "img/kitachikusa.jpg",
-    badge: "芸術系",
-    ribbon: "夜間の利用が人気です",
-    distance: "今池駅から バス 8分",
-    address: "千種区北千種 2-10",
-    features: ["大型車利用可", "照明付き駐車場", "入門ゲート24h"],
-    availabilityLabel: "学生割適用中",
-    availabilityValue: "車両数 4台",
-    rating: "4.6",
-    reviews: 86,
-  },
-  {
     id: "tanabe",
     name: "田辺通キャンパス",
     image: "img/tanabe.jpg",
     badge: "教育系",
     ribbon: "朝の予約がしやすい",
-    distance: "八事駅から 徒歩 5分",
+    distance: "現在地から1.9km",
     address: "昭和区田辺通 3-5",
     features: ["屋根付き駐車場", "チャイルドシート常備", "ICカード解錠"],
     availabilityLabel: "おすすめ枠",
@@ -62,11 +48,27 @@ const CAMPUSES = [
     rating: "4.5",
     reviews: 74,
   },
+  {
+    id: "kitachikusa",
+    name: "北千種キャンパス",
+    image: "img/kitachikusa.jpg",
+    badge: "芸術系",
+    ribbon: "夜間の利用が人気です",
+    distance: "現在地から5.9km",
+    address: "千種区北千種 2-10",
+    features: ["大型車利用可", "照明付き駐車場", "入門ゲート24h"],
+    availabilityLabel: "学生割適用中",
+    availabilityValue: "車両数 4台",
+    rating: "4.6",
+    reviews: 86,
+  },
 ];
 
 let currentUser = null;
 let currentCampusId = null;
 let selectedCampusId = null;
+
+const MINUTES_PER_DAY = 24 * 60;
 
 /* ===== 共通処理 ===== */
 function showPage(id) {
@@ -89,24 +91,38 @@ function timeToMinutes(t) {
 }
 
 function minutesToTime(mins) {
-  const h = Math.floor(mins / 60);
-  const m = mins % 60;
+  const normalized = ((mins % MINUTES_PER_DAY) + MINUTES_PER_DAY) % MINUTES_PER_DAY;
+  const h = Math.floor(normalized / 60);
+  const m = normalized % 60;
   return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
 }
 
+function formatTimeWithDay(mins) {
+  const dayOffset = Math.floor(mins / MINUTES_PER_DAY);
+  const time = minutesToTime(mins);
+  return dayOffset > 0 ? `翌日 ${time}` : time;
+}
+
+function getCampusById(id) {
+  return CAMPUSES.find(c => c.id === id) || null;
+}
+
+function formatDateForDisplay(dateStr) {
+  if (!dateStr) return "";
+  const [y, m, d] = dateStr.split("-");
+  return `${m}/${d}`;
+}
+
 // 同日同キャンパスで重複していないか
-function isTimeAvailable(dateStr, campusId, start, endWithGap) {
+function isTimeAvailable(dateStr, campusId, startMinutes, endMinutes) {
   const reservations = loadReservations().filter(r => {
     return r.date === dateStr && r.campusId === campusId;
   });
 
-  const newStart = timeToMinutes(start);
-  const newEnd = timeToMinutes(endWithGap);
-
   for (const r of reservations) {
-    const s = timeToMinutes(r.start);
-    const e = timeToMinutes(r.end);
-    if (newStart < e && s < newEnd) {
+    const s = r.startMinutes ?? timeToMinutes(r.start);
+    const e = r.endMinutes ?? timeToMinutes(r.end);
+    if (startMinutes < e && s < endMinutes) {
       return false;
     }
   }
@@ -116,7 +132,10 @@ function isTimeAvailable(dateStr, campusId, start, endWithGap) {
 function renderReservationList(dateStr, campusId) {
   const listEl = document.getElementById("reservationList");
   listEl.innerHTML = "";
-  if (!dateStr || !campusId) return;
+  if (!dateStr || !campusId) {
+    listEl.innerHTML = "<li>キャンパスと日付を選択してください。</li>";
+    return;
+  }
 
   const reservations = loadReservations().filter(r => {
     return r.date === dateStr && r.campusId === campusId;
@@ -127,12 +146,120 @@ function renderReservationList(dateStr, campusId) {
     return;
   }
 
-  reservations.sort((a, b) => a.start.localeCompare(b.start));
+  reservations.sort((a, b) => {
+    const aStart = a.startMinutes ?? timeToMinutes(a.start);
+    const bStart = b.startMinutes ?? timeToMinutes(b.start);
+    return aStart - bStart;
+  });
   reservations.forEach(r => {
     const li = document.createElement("li");
-    li.textContent = `${r.start} - ${r.end} (${r.userName})`;
+    const endDisplay =
+      typeof r.endMinutes === "number" ? formatTimeWithDay(r.endMinutes) : r.end;
+    li.textContent = `${r.start} - ${endDisplay} (${r.userName})`;
     listEl.appendChild(li);
   });
+}
+
+function renderSideReservations() {
+  const listEl = document.getElementById("sideReservationList");
+  if (!listEl) return;
+
+  listEl.innerHTML = "";
+
+  if (!currentUser) {
+    listEl.innerHTML = "<li>ログインすると予約が表示されます。</li>";
+    return;
+  }
+
+  const reservations = loadReservations().filter(r => r.userId === currentUser.studentId);
+
+  if (reservations.length === 0) {
+    listEl.innerHTML = "<li>まだ予約がありません。</li>";
+    return;
+  }
+
+  reservations.sort((a, b) => {
+    if (a.date === b.date) {
+      const aStart = a.startMinutes ?? timeToMinutes(a.start);
+      const bStart = b.startMinutes ?? timeToMinutes(b.start);
+      return aStart - bStart;
+    }
+    return a.date.localeCompare(b.date);
+  });
+
+  reservations.forEach(r => {
+    const campus = getCampusById(r.campusId);
+    const endDisplay =
+      typeof r.endMinutes === "number" ? formatTimeWithDay(r.endMinutes) : r.end;
+    const campusName = campus ? campus.name : r.campusId;
+
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <span class="side-resv-date">${formatDateForDisplay(r.date)}</span>
+      <span class="side-resv-time">${r.start} - ${endDisplay}</span>
+      <span class="side-resv-campus">${campusName}</span>
+    `;
+    listEl.appendChild(li);
+  });
+}
+
+function updateReserveCampusInfo() {
+  const nameEl = document.getElementById("reserveCampusName");
+  const distanceEl = document.getElementById("reserveCampusDistance");
+  const summaryEl = document.getElementById("reserveCampusSummary");
+
+  if (!nameEl || !distanceEl || !summaryEl) return;
+
+  if (!currentCampusId) {
+    nameEl.textContent = "キャンパス未選択";
+    distanceEl.textContent = "";
+    summaryEl.innerHTML = '<p class="schedule-summary-empty">キャンパス情報がここに表示されます。</p>';
+    return;
+  }
+
+  const campus = getCampusById(currentCampusId);
+  if (!campus) {
+    nameEl.textContent = "キャンパス未選択";
+    distanceEl.textContent = "";
+    summaryEl.innerHTML = '<p class="schedule-summary-empty">キャンパス情報が取得できませんでした。</p>';
+    return;
+  }
+
+  nameEl.textContent = campus.name;
+  distanceEl.textContent = campus.distance;
+  summaryEl.innerHTML = `
+    <div class="summary-header">
+      <span class="summary-badge">${campus.badge}</span>
+      <div class="summary-rating">
+        <span class="star">★</span>
+        <span>${campus.rating}</span>
+        <span class="reviews">(${campus.reviews}件)</span>
+      </div>
+    </div>
+    <h3 class="summary-title">${campus.name}</h3>
+    <p class="summary-distance">${campus.distance}</p>
+    <p class="summary-address">${campus.address}</p>
+    <ul class="summary-features">
+      ${campus.features.map(f => `<li>${f}</li>`).join("")}
+    </ul>
+    <div class="summary-availability">
+      <span class="label">${campus.availabilityLabel}</span>
+      <span class="value">${campus.availabilityValue}</span>
+    </div>
+  `;
+}
+
+function resetReserveMessages() {
+  const check = document.getElementById("checkResult");
+  const reserve = document.getElementById("reserveMessage");
+  if (check) {
+    check.textContent = "";
+    check.className = "message";
+  }
+  if (reserve) {
+    reserve.textContent = "";
+    reserve.className = "message";
+  }
 }
 
 /* ===== 15分刻みのselect生成 ===== */
@@ -220,7 +347,7 @@ function updateSelectedCampusDisplay() {
   }
   const campus = CAMPUSES.find(c => c.id === selectedCampusId);
   if (campus) {
-    selectedText.textContent = `${campus.name}を選択中です。`;
+    selectedText.textContent = `${campus.name}を選択中です。（${campus.distance}）`;
     nextBtn.disabled = false;
   }
 }
@@ -255,7 +382,16 @@ window.addEventListener("DOMContentLoaded", () => {
 
   // 時刻セレクト
   populateTimeSelects();
-  document.getElementById("startTime").addEventListener("change", limitEndTimes);
+  const startSelect = document.getElementById("startTime");
+  const endSelect = document.getElementById("endTimeUser");
+  const reserveDateInput = document.getElementById("reserveDate");
+
+  startSelect.addEventListener("change", () => {
+    limitEndTimes();
+    resetReserveMessages();
+  });
+  endSelect.addEventListener("change", resetReserveMessages);
+  limitEndTimes();
 
   // ハンバーガー
   const menuBtn = document.getElementById("menuBtn");
@@ -276,21 +412,43 @@ window.addEventListener("DOMContentLoaded", () => {
   overlay.addEventListener("click", closeMenuFn);
 
   // ログイン処理
-  document.getElementById("btnLogin").addEventListener("click", () => {
+  const loginForm = document.getElementById("loginForm");
+  const loginMessage = document.getElementById("loginMessage");
+  loginForm.addEventListener("submit", e => {
+    e.preventDefault();
     const sid = document.getElementById("studentId").value.trim();
     const pw = document.getElementById("password").value.trim();
-    const msg = document.getElementById("loginMessage");
 
     const found = DUMMY_USERS.find(u => u.studentId === sid && u.password === pw);
     if (!found) {
-      msg.textContent = "学籍番号またはパスワードが違います。";
-      msg.className = "message error";
+      loginMessage.textContent = "学籍番号またはパスワードが違います。";
+      loginMessage.className = "message error";
       return;
     }
 
     currentUser = found;
-    msg.textContent = "";
+    loginMessage.textContent = "";
+    loginMessage.className = "message";
     document.getElementById("sideUserName").textContent = `${found.name}`;
+
+    localStorage.removeItem("reservations");
+    renderSideReservations();
+
+    document
+      .querySelectorAll(".campus-card.selected")
+      .forEach(el => el.classList.remove("selected"));
+    selectedCampusId = null;
+    currentCampusId = null;
+    updateSelectedCampusDisplay();
+    updateReserveCampusInfo();
+    resetReserveMessages();
+    reserveDateInput.value = "";
+    startSelect.selectedIndex = 0;
+    endSelect.selectedIndex = 0;
+    limitEndTimes();
+    renderReservationList("", "");
+
+    loginForm.reset();
     showPage("page-campus");
   });
 
@@ -299,9 +457,28 @@ window.addEventListener("DOMContentLoaded", () => {
     if (!selectedCampusId) return;
     currentCampusId = selectedCampusId;
     showPage("page-reserve");
+    updateReserveCampusInfo();
+    resetReserveMessages();
     const today = new Date().toISOString().slice(0, 10);
-    document.getElementById("reserveDate").value = today;
+    reserveDateInput.value = today;
+    startSelect.selectedIndex = 0;
+    endSelect.selectedIndex = 0;
+    limitEndTimes();
     renderReservationList(today, currentCampusId);
+  });
+
+  document.getElementById("btnBackToCampus").addEventListener("click", () => {
+    showPage("page-campus");
+    currentCampusId = null;
+    updateReserveCampusInfo();
+    resetReserveMessages();
+    reserveDateInput.value = "";
+    document
+      .querySelectorAll(".campus-card.selected")
+      .forEach(el => el.classList.remove("selected"));
+    selectedCampusId = null;
+    updateSelectedCampusDisplay();
+    renderReservationList("", "");
   });
 
   // 空き確認
@@ -310,6 +487,19 @@ window.addEventListener("DOMContentLoaded", () => {
     const start = document.getElementById("startTime").value;
     const endUser = document.getElementById("endTimeUser").value;
     const result = document.getElementById("checkResult");
+    const reserveMsg = document.getElementById("reserveMessage");
+
+    result.className = "message";
+    if (reserveMsg) {
+      reserveMsg.textContent = "";
+      reserveMsg.className = "message";
+    }
+
+    if (!currentCampusId) {
+      result.textContent = "キャンパスを選び直してください。";
+      result.className = "message error";
+      return;
+    }
 
     if (!date || !start || !endUser) {
       result.textContent = "日付・開始・終了を入力してください。";
@@ -317,12 +507,14 @@ window.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    const startMin = timeToMinutes(start);
     const endUserMin = timeToMinutes(endUser);
-    const endWithGap = minutesToTime(endUserMin + 30);
+    const endWithGapMin = endUserMin + 30;
+    const endDisplay = formatTimeWithDay(endWithGapMin);
 
-    const ok = isTimeAvailable(date, currentCampusId, start, endWithGap);
+    const ok = isTimeAvailable(date, currentCampusId, startMin, endWithGapMin);
     if (ok) {
-      result.textContent = `予約できます。（終了扱い時間: ${endWithGap}）`;
+      result.textContent = `予約できます。（終了扱い時間: ${endDisplay}）`;
       result.className = "message ok";
     } else {
       result.textContent = "すでに予約があります。別の時間にしてください。";
@@ -342,16 +534,23 @@ window.addEventListener("DOMContentLoaded", () => {
       msg.className = "message error";
       return;
     }
+    if (!currentCampusId) {
+      msg.textContent = "キャンパスを選び直してください。";
+      msg.className = "message error";
+      return;
+    }
     if (!date || !start || !endUser) {
       msg.textContent = "日付・開始・終了を入力してください。";
       msg.className = "message error";
       return;
     }
 
+    const startMin = timeToMinutes(start);
     const endUserMin = timeToMinutes(endUser);
-    const endWithGap = minutesToTime(endUserMin + 30);
+    const endWithGapMin = endUserMin + 30;
+    const endDisplay = formatTimeWithDay(endWithGapMin);
 
-    const ok = isTimeAvailable(date, currentCampusId, start, endWithGap);
+    const ok = isTimeAvailable(date, currentCampusId, startMin, endWithGapMin);
     if (!ok) {
       msg.textContent = "この時間帯は予約済みです。";
       msg.className = "message error";
@@ -363,21 +562,30 @@ window.addEventListener("DOMContentLoaded", () => {
       date,
       campusId: currentCampusId,
       start,
-      end: endWithGap,
+      startMinutes: startMin,
+      endUser,
+      end: endDisplay,
+      endMinutes: endWithGapMin,
       userName: currentUser.name,
       userId: currentUser.studentId,
     });
     saveReservations(reservations);
 
-    msg.textContent = "予約しました。";
+    msg.textContent = `予約しました。（終了扱い時間: ${endDisplay}）`;
     msg.className = "message ok";
     renderReservationList(date, currentCampusId);
+    renderSideReservations();
   });
 
   // 日付切替
-  document.getElementById("reserveDate").addEventListener("change", (e) => {
+  reserveDateInput.addEventListener("change", (e) => {
+    resetReserveMessages();
     if (currentCampusId) {
       renderReservationList(e.target.value, currentCampusId);
     }
   });
+
+  renderSideReservations();
+  updateReserveCampusInfo();
+  renderReservationList("", "");
 });
