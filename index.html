@@ -24,7 +24,7 @@
     </div>
     <ul class="side-menu-list">
       <li>マイページ（ダミー）</li>
-      <li>予約一覧（この画面の下部に表示）</li>
+      <li>予約一覧（下部に表示）</li>
       <li>ログアウトはリロードしてください</li>
     </ul>
   </aside>
@@ -46,13 +46,15 @@
     </div>
   </main>
 
-  <!-- キャンパス選択 -->
+  <!-- キャンパス選択（ホテル一覧風） -->
   <main id="page-campus" class="page">
     <div class="card">
-      <h2>キャンパスを選択</h2>
-      <p class="note">利用するキャンパスを選んでください。</p>
-      <select id="campusSelect"></select>
-      <button id="btnCampusNext" class="btn primary">日時を選択</button>
+      <h2>キャンパスを選ぶ</h2>
+      <p class="note">近いキャンパスを選択してください。</p>
+      <div id="campusList" class="campus-list">
+        <!-- JSでカードを生成 -->
+      </div>
+      <button id="btnCampusNext" class="btn primary" disabled>日時を選択</button>
     </div>
   </main>
 
@@ -64,6 +66,25 @@
       <label>日付
         <input type="date" id="reserveDate" />
       </label>
+      <label>開始時刻
+        <select id="startTime"></select>
+      </label>
+      <label>終了時刻（利用する時間の終わり）
+        <select id="endTimeUser"></select>
+      </label>
+      <button id="btnCheck" class="btn">空き状況を確認</button>
+      <div id="checkResult" class="message"></div>
+      <button id="btnReserve" class="btn primary">この内容で予約</button>
+      <p id="reserveMessage" class="message"></p>
+
+      <h3>その日の予約一覧</h3>
+      <ul id="reservationList" class="list"></ul>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>      </label>
       <label>開始時刻
         <select id="startTime"></select>
       </label>
