@@ -1,0 +1,136 @@
+:root {
+  --bg: #f5f6f8;
+  --card: #fff;
+  --border: #d5d7dd;
+  --text: #333;
+  --accent: #2563eb;
+  --danger: #b91c1c;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: var(--text);
+}
+
+.topbar {
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+  padding: 0.7rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.topbar h1 {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.login-user {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.page {
+  display: none;
+  max-width: 640px;
+  margin: 1.5rem auto;
+  padding: 0 1rem;
+}
+
+.page.active {
+  display: block;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 1.2rem;
+}
+
+h2 {
+  margin-top: 0;
+  font-size: 1.2rem;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.8rem;
+  font-size: 0.9rem;
+}
+
+input, select {
+  width: 100%;
+  padding: 0.45rem 0.5rem;
+  margin-top: 0.3rem;
+  border: 1px solid var(--border);
+  border-radius: 0.3rem;
+  font-size: 0.9rem;
+}
+
+.btn {
+  display: inline-block;
+  padding: 0.5rem 0.9rem;
+  border: 1px solid var(--border);
+  background: #fff;
+  border-radius: 0.3rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin-right: 0.4rem;
+  margin-top: 0.4rem;
+}
+
+.btn.primary {
+  background: var(--accent);
+  color: #fff;
+  border: 1px solid var(--accent);
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.note {
+  font-size: 0.75rem;
+  color: #555;
+  margin-bottom: 0.7rem;
+}
+
+.message {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+}
+
+.message.ok {
+  color: #166534;
+}
+
+.message.error {
+  color: var(--danger);
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin-top: 0.7rem;
+}
+
+.list li {
+  border-bottom: 1px solid #eee;
+  padding: 0.4rem 0;
+  font-size: 0.8rem;
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: 1rem 0.8rem;
+  }
+}
