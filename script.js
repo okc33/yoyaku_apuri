@@ -3,7 +3,7 @@ const DUMMY_USERS = [
   { studentId: "c000000", password: "000000", name: "名古屋 太郎" },
 ];
 
-// キャンパス一覧（画像パスは差し替えてOK）
+// キャンパス一覧（画像はダミー。なくても動く）
 const CAMPUSES = [
   { id: "takiko", name: "滝子キャンパス", distance: "0.1 km", img: "img/takiko2.jpg" },
   { id: "sakurayama", name: "桜山キャンパス", distance: "0.8 km", img: "img/sakurayama9.jpg" },
@@ -14,7 +14,7 @@ const CAMPUSES = [
 let currentUser = null;
 let currentCampusId = null;
 
-/* === 共通 === */
+/* 共通 */
 function showPage(id) {
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
   document.getElementById(id).classList.add("active");
@@ -80,7 +80,7 @@ function renderReservationList(dateStr, campusId) {
   });
 }
 
-/* === 時間select === */
+/* 時間セレクト */
 function populateTimeSelects() {
   const startSel = document.getElementById("startTime");
   const endSel = document.getElementById("endTimeUser");
@@ -116,7 +116,7 @@ function limitEndTimes() {
   }
 }
 
-/* === 初期化 === */
+/* 初期化 */
 window.addEventListener("DOMContentLoaded", () => {
   // ハンバーガー
   const menuBtn = document.getElementById("menuBtn");
@@ -138,55 +138,57 @@ window.addEventListener("DOMContentLoaded", () => {
 
   // キャンパスカード生成
   const campusList = document.getElementById("campusList");
-  CAMPUSES.forEach(c => {
-    const card = document.createElement("div");
-    card.className = "campus-card";
-    card.dataset.id = c.id;
+  if (campusList) {
+    CAMPUSES.forEach(c => {
+      const card = document.createElement("div");
+      card.className = "campus-card";
+      card.dataset.id = c.id;
 
-    const img = document.createElement("img");
-    img.className = "campus-img";
-    img.src = c.img;
-    img.alt = c.name;
-    // 画像がない時でも高さ確保
-    img.onerror = () => {
-      img.style.background = "#e5e7eb";
-      img.src = "";
-      img.alt = "";
-    };
+      const img = document.createElement("img");
+      img.className = "campus-img";
+      img.src = c.img;
+      img.alt = c.name;
+      img.onerror = () => {
+        // エラー時は背景だけ
+        img.style.background = "#e5e7eb";
+        img.style.width = "110px";
+        img.style.height = "100%";
+      };
 
-    const body = document.createElement("div");
-    body.className = "campus-body";
+      const body = document.createElement("div");
+      body.className = "campus-body";
 
-    const name = document.createElement("div");
-    name.className = "campus-name";
-    name.textContent = c.name;
+      const name = document.createElement("div");
+      name.className = "campus-name";
+      name.textContent = c.name;
 
-    const dist = document.createElement("div");
-    dist.className = "campus-distance";
-    dist.textContent = c.distance + " から";
+      const dist = document.createElement("div");
+      dist.className = "campus-distance";
+      dist.textContent = c.distance + " から";
 
-    const meta = document.createElement("div");
-    meta.className = "campus-meta";
-    meta.textContent = "駐車場あり・学生利用可";
+      const meta = document.createElement("div");
+      meta.className = "campus-meta";
+      meta.textContent = "駐車場あり・学生利用可";
 
-    body.appendChild(name);
-    body.appendChild(dist);
-    body.appendChild(meta);
+      body.appendChild(name);
+      body.appendChild(dist);
+      body.appendChild(meta);
 
-    card.appendChild(img);
-    card.appendChild(body);
+      card.appendChild(img);
+      card.appendChild(body);
 
-    card.addEventListener("click", () => {
-      document.querySelectorAll(".campus-card").forEach(el => el.classList.remove("selected"));
-      card.classList.add("selected");
-      currentCampusId = c.id;
-      document.getElementById("btnCampusNext").disabled = false;
+      card.addEventListener("click", () => {
+        document.querySelectorAll(".campus-card").forEach(el => el.classList.remove("selected"));
+        card.classList.add("selected");
+        currentCampusId = c.id;
+        document.getElementById("btnCampusNext").disabled = false;
+      });
+
+      campusList.appendChild(card);
     });
+  }
 
-    campusList.appendChild(card);
-  });
-
-  // 時刻セレクト
+  // 時間セレクト
   populateTimeSelects();
   document.getElementById("startTime").addEventListener("change", limitEndTimes);
 
@@ -294,43 +296,7 @@ window.addEventListener("DOMContentLoaded", () => {
       renderReservationList(e.target.value, currentCampusId);
     }
   });
-});startTime");
-  const endSel = document.getElementById("endTimeUser");
-  const startVal = startSel.value;
-  const startMin = timeToMinutes(startVal);
-
-  Array.from(endSel.options).forEach(opt => {
-    const endMin = timeToMinutes(opt.value);
-    opt.disabled = endMin <= startMin;
-  });
-
-  if (endSel.value && timeToMinutes(endSel.value) <= startMin) {
-    endSel.value = "";
-  }
-}
-
-/* ===== 初期化 ===== */
-window.addEventListener("DOMContentLoaded", () => {
-  // キャンパスセレクト
-  const campusSelect = document.getElementById("campusSelect");
-  CAMPUSES.forEach(c => {
-    const opt = document.createElement("option");
-    opt.value = c.id;
-    opt.textContent = c.name;
-    campusSelect.appendChild(opt);
-  });
-
-  // 時刻セレクト
-  populateTimeSelects();
-  document.getElementById("startTime").addEventListener("change", limitEndTimes);
-
-  // ハンバーガー
-  const menuBtn = document.getElementById("menuBtn");
-  const sideMenu = document.getElementById("sideMenu");
-  const overlay = document.getElementById("overlay");
-  const closeMenu = document.getElementById("closeMenu");
-
-  function openMenu() {
+});penMenu() {
     sideMenu.classList.add("open");
     overlay.classList.add("show");
   }
