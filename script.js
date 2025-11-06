@@ -294,42 +294,7 @@ window.addEventListener("DOMContentLoaded", () => {
       renderReservationList(e.target.value, currentCampusId);
     }
   });
-});  if (reservations.length === 0) {
-    listEl.innerHTML = "<li>予約はありません。</li>";
-    return;
-  }
-
-  reservations.sort((a, b) => a.start.localeCompare(b.start));
-  reservations.forEach(r => {
-    const li = document.createElement("li");
-    li.textContent = `${r.start} - ${r.end} (${r.userName})`;
-    listEl.appendChild(li);
-  });
-}
-
-/* ===== 15分刻みのselect生成 ===== */
-function populateTimeSelects() {
-  const startSel = document.getElementById("startTime");
-  const endSel = document.getElementById("endTimeUser");
-  startSel.innerHTML = "";
-  endSel.innerHTML = "";
-
-  for (let h = 0; h < 24; h++) {
-    for (let m = 0; m < 60; m += 15) {
-      const t = `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
-      const opt1 = document.createElement("option");
-      const opt2 = document.createElement("option");
-      opt1.value = opt2.value = t;
-      opt1.textContent = opt2.textContent = t;
-      startSel.appendChild(opt1);
-      endSel.appendChild(opt2);
-    }
-  }
-}
-
-// 終了時刻は開始より後だけ
-function limitEndTimes() {
-  const startSel = document.getElementById("startTime");
+});startTime");
   const endSel = document.getElementById("endTimeUser");
   const startVal = startSel.value;
   const startMin = timeToMinutes(startVal);
