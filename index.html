@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>キャンパスカーシェア予約</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>キャンパスカーシェア予約</h1>
+    <div id="loginUser" class="login-user"></div>
+  </header>
+
+  <!-- ログイン画面 -->
+  <main id="page-login" class="page active">
+    <div class="card">
+      <h2>ログイン</h2>
+      <p class="note">学籍番号とパスワードを入力してください。</p>
+      <label>学籍番号
+        <input type="text" id="studentId" placeholder="例: 20250001" />
+      </label>
+      <label>パスワード
+        <input type="password" id="password" placeholder="password" />
+      </label>
+      <button id="btnLogin" class="btn primary">ログイン</button>
+      <p id="loginMessage" class="message"></p>
+    </div>
+  </main>
+
+  <!-- キャンパス選択 -->
+  <main id="page-campus" class="page">
+    <div class="card">
+      <h2>キャンパスを選択</h2>
+      <p class="note">利用するキャンパスを選んでください。</p>
+      <select id="campusSelect"></select>
+      <button id="btnCampusNext" class="btn primary">日時を選択</button>
+    </div>
+  </main>
+
+  <!-- 日時選択 -->
+  <main id="page-reserve" class="page">
+    <div class="card">
+      <h2>利用日時を選択</h2>
+      <p class="note">終了時間のあと30分は自動でブロックされます。</p>
+      <label>日付
+        <input type="date" id="reserveDate" />
+      </label>
+      <label>開始時刻
+        <input type="time" id="startTime" />
+      </label>
+      <label>終了時刻（利用する時間の終わり）
+        <input type="time" id="endTimeUser" />
+      </label>
+      <button id="btnCheck" class="btn">空き状況を確認</button>
+      <div id="checkResult" class="message"></div>
+      <button id="btnReserve" class="btn primary">この内容で予約</button>
+      <p id="reserveMessage" class="message"></p>
+
+      <h3>その日の予約一覧</h3>
+      <ul id="reservationList" class="list"></ul>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
