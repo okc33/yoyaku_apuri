@@ -7,26 +7,44 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <!-- 上部バー -->
   <header class="topbar">
-    <h1>キャンパスカーシェア予約</h1>
-    <div id="loginUser" class="login-user"></div>
+    <button id="menuBtn" class="icon-btn" aria-label="menu">
+      ☰
+    </button>
+    <h1 class="app-title">キャンパスカーシェア予約</h1>
+    <div class="spacer"></div>
   </header>
 
- <!-- ログイン画面 -->
-<main id="page-login" class="page active">
-  <div class="card">
-    <h2>ログイン</h2>
-    <p class="note">学籍番号とパスワードを入力してください。</p>
-    <label>学籍番号
-      <input type="text" id="studentId" placeholder="例: c000000" />
-    </label>
-    <label>パスワード
-      <input type="password" id="password" placeholder="例: 000000" />
-    </label>
-    <button id="btnLogin" class="btn primary">ログイン</button>
-    <p id="loginMessage" class="message"></p>
-  </div>
-</main>
+  <!-- サイドメニュー -->
+  <aside id="sideMenu" class="side-menu">
+    <div class="side-menu-header">
+      <div class="user-name" id="sideUserName">ログインしていません</div>
+      <button id="closeMenu" class="icon-btn">×</button>
+    </div>
+    <ul class="side-menu-list">
+      <li>マイページ（ダミー）</li>
+      <li>予約一覧（この画面の下部に表示）</li>
+      <li>ログアウトはリロードしてください</li>
+    </ul>
+  </aside>
+  <div id="overlay" class="overlay"></div>
+
+  <!-- ログイン画面 -->
+  <main id="page-login" class="page active">
+    <div class="card">
+      <h2>ログイン</h2>
+      <p class="note">学籍番号とパスワードを入力してください。</p>
+      <label>学籍番号
+        <input type="text" id="studentId" placeholder="例: c000000" />
+      </label>
+      <label>パスワード
+        <input type="password" id="password" placeholder="例: 000000" />
+      </label>
+      <button id="btnLogin" class="btn primary">ログイン</button>
+      <p id="loginMessage" class="message"></p>
+    </div>
+  </main>
 
   <!-- キャンパス選択 -->
   <main id="page-campus" class="page">
@@ -42,15 +60,15 @@
   <main id="page-reserve" class="page">
     <div class="card">
       <h2>利用日時を選択</h2>
-      <p class="note">終了時間のあと30分は自動でブロックされます。</p>
+      <p class="note">終了時刻のあと30分は自動でブロックされます。</p>
       <label>日付
         <input type="date" id="reserveDate" />
       </label>
       <label>開始時刻
-        <input type="time" id="startTime" />
+        <select id="startTime"></select>
       </label>
       <label>終了時刻（利用する時間の終わり）
-        <input type="time" id="endTimeUser" />
+        <select id="endTimeUser"></select>
       </label>
       <button id="btnCheck" class="btn">空き状況を確認</button>
       <div id="checkResult" class="message"></div>
@@ -64,4 +82,5 @@
 
   <script src="script.js"></script>
 </body>
+</html></body>
 </html>
