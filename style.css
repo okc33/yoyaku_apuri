@@ -220,8 +220,8 @@ a:hover {
 /* ====== ページ共通 ====== */
 main.page {
   display: none;
-  /* 上部余白を小さくして画面上部の無駄なスペースを削減 */
-  padding: 1rem 1.5rem 2rem;
+  /* 上部余白を最小化（トップバー分の余白は不要な場合があるため） */
+  padding: 0.6rem 1.5rem 1.2rem;
 }
 
 .page.active {
@@ -319,8 +319,8 @@ main.page {
   display: flex;
   justify-content: center;
   align-items: stretch;
-  /* ログイン画面の上部余白を縮小 */
-  padding: 1.2rem 1.5rem 2rem;
+  /* ログイン画面上部を詰める */
+  padding: 0.6rem 1.5rem 1.6rem;
 }
 
 .login-layout {
@@ -466,8 +466,8 @@ select:focus {
 
 @media (max-width: 600px) {
   .login-page {
-    /* モバイル時も上部余白を小さく */
-    padding: 1rem 1rem 1.6rem;
+    /* モバイル時も上部余白を最小に */
+    padding: 0.6rem 1rem 1.2rem;
   }
 
   .login-panel {
@@ -859,8 +859,8 @@ select:focus {
 
 @media (max-width: 520px) {
   main.page {
-    /* モバイル時の利用日時画面上部余白を縮小 */
-    padding: 1rem 1rem 1.6rem;
+    /* モバイル時はさらに詰める */
+    padding: 0.6rem 1rem 1rem;
   }
 
   .card {
