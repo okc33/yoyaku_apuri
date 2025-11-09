@@ -9,15 +9,13 @@
 <body>
   <!-- 上部バー -->
   <header class="topbar">
-    <button id="menuBtn" class="icon-btn" aria-label="メニューを開く">
-      ☰
-    </button>
+    <button id="menuBtn" class="icon-btn" aria-label="メニューを開く">☰</button>
     <h1 class="app-title">キャンパスカーシェア予約</h1>
     <div class="spacer"></div>
   </header>
 
   <!-- サイドメニュー -->
-  <aside id="sideMenu" class="side-menu">
+  <aside id="sideMenu" class="side-menu" aria-label="サイドメニュー">
     <div class="side-menu-header">
       <div class="user-name" id="sideUserName">ログインしていません</div>
       <button id="closeMenu" class="icon-btn" aria-label="メニューを閉じる">×</button>
@@ -38,52 +36,56 @@
       </div>
     </div>
   </aside>
-  <div id="overlay" class="overlay"></div>
+  <div id="overlay" class="overlay" role="presentation"></div>
 
   <!-- ログイン画面 -->
-  <main id="page-login" class="page active login-page">
-    <div class="login-wrapper">
-      <form id="loginForm" class="card login-card">
-        <div class="login-brand">
-          <img src="img/logo.png" alt="NISSIN GROUP" class="login-logo" />
+  <main id="page-login" class="page active login-page" aria-labelledby="loginHeading">
+    <div class="login-layout">
+      <section class="login-hero">
+        <div class="login-hero-inner">
+          <img src="img/logo.png" alt="" class="login-hero-logo" />
+          <h2 class="login-hero-title" id="loginHeading">キャンパスカーシェア予約</h2>
+          <p class="login-banner">アカウント登録もしくはログインしてください。</p>
         </div>
-        <h2 class="login-title">ログイン</h2>
-        <p class="login-description">
-         学籍番号とパスワードを入力してください。
-        </p>
-        <label for="studentId" class="login-label">学籍番号</label>
-        <input
-          type="text"
-          id="studentId"
-          placeholder="例: c000000"
-          autocomplete="username"
-          required
-        />
-     <label for="password" class="login-label">パスワード</label>
-        <div class="login-password-field">
+      </section>
+      <section class="login-panel">
+        <form id="loginForm" class="card login-card" aria-describedby="loginDescription">
+          <h2 class="login-title">ログイン</h2>
+          <p class="login-description" id="loginDescription">学籍番号とパスワードを入力してください。</p>
+          <label for="studentId" class="login-label">学籍番号</label>
           <input
-            type="password"
-            id="password"
-            placeholder="例: 000000"
-            autocomplete="current-password"
+            type="text"
+            id="studentId"
+            placeholder="例: c000000"
+            autocomplete="username"
             required
           />
-          <span class="login-password-icon" aria-hidden="true">👁</span>
-        </div>
-        <a href="#" class="login-link">パスワードをお忘れですか？</a>
-        <button id="btnLogin" type="submit" class="btn primary login-submit">続ける</button>
-        <p id="loginMessage" class="message"></p>
-        <p class="login-footer">
-          アカウントが未登録ですか？
-          <a href="#" class="login-link">アカウントの作成</a>
-        </p>
-      </form>
+          <label for="password" class="login-label">パスワード</label>
+          <div class="login-password-field">
+            <input
+              type="password"
+              id="password"
+              placeholder="例: 000000"
+              autocomplete="current-password"
+              required
+            />
+            <span class="login-password-icon" aria-hidden="true">👁</span>
+          </div>
+          <a href="#" class="login-link">パスワードをお忘れですか？</a>
+          <button id="btnLogin" type="submit" class="btn primary login-submit">続ける</button>
+          <p id="loginMessage" class="message" role="alert"></p>
+          <p class="login-footer">
+            アカウントが未登録ですか？
+            <a href="#" class="login-link">アカウントの作成</a>
+          </p>
+        </form>
+      </section>
     </div>
   </main>
 
   <!-- キャンパス選択 -->
-  <main id="page-campus" class="page">
-    <div class="card">
+  <main id="page-campus" class="page" aria-labelledby="campusHeading">
+    <div class="card campus-card-container">
       <h2 id="campusHeading">キャンパスを選択</h2>
       <p class="note">利用するキャンパスをタップして選んでください。</p>
       <div
@@ -105,7 +107,7 @@
   </main>
 
   <!-- 日時選択 -->
-  <main id="page-reserve" class="page">
+  <main id="page-reserve" class="page" aria-labelledby="reserveHeading">
     <div class="card schedule-card">
       <div class="schedule-header">
         <button id="btnBackToCampus" type="button" class="link-btn">← キャンパスを選び直す</button>
@@ -115,7 +117,7 @@
         </div>
       </div>
       <div class="schedule-intro">
-        <h2>利用日時を選択</h2>
+        <h2 id="reserveHeading">利用日時を選択</h2>
         <p class="note">終了時刻のあと30分は自動でブロックされます。</p>
       </div>
       <div class="schedule-layout">
@@ -141,15 +143,15 @@
           </div>
           <div class="field">
             <button id="btnCheck" type="button" class="btn">空き状況を確認</button>
-            <div id="checkResult" class="message"></div>
+            <div id="checkResult" class="message" role="status"></div>
           </div>
           <div class="field">
             <button id="btnReserve" type="button" class="btn primary">この内容で予約</button>
-            <div id="reserveMessage" class="message"></div>
+            <div id="reserveMessage" class="message" role="status"></div>
           </div>
         </section>
       </div>
-      <section class="schedule-reservations">
+      <section class="schedule-reservations" aria-live="polite">
         <h3>その日の予約一覧</h3>
         <ul id="reservationList" class="list"></ul>
       </section>
