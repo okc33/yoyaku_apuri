@@ -228,14 +228,6 @@ a:hover {
   pointer-events: auto;
 }
 
-@media (min-width: 960px) {
-  .side-menu {
-    position: sticky;
-    top: 54px;
-    height: calc(100vh - 54px);
-  }
-}
-
 /* ====== ページ共通 ====== */
 main.page {
   display: none;
