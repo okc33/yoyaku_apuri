@@ -21,6 +21,16 @@ body {
   min-height: 100%;
 }
 
+/* 上部の予期せぬ余白対策（UA既定マージンの打ち消し） */
+h1, h2, h3, h4, h5, h6, p {
+  margin-block-start: 0;
+}
+
+/* ページ直下の最初の要素の上マージンが外にはみ出さないように */
+.page > *:first-child {
+  margin-top: 0 !important;
+}
+
 body {
   font-family: "Segoe UI", "Hiragino Sans", "Yu Gothic", sans-serif;
   background: var(--bg);
@@ -318,7 +328,8 @@ main.page {
 .login-page {
   display: flex;
   justify-content: center;
-  align-items: stretch;
+  /* 画面上部に寄せる */
+  align-items: flex-start;
   /* ログイン画面上部を詰める */
   padding: 0.25rem 1.5rem 1.2rem;
 }
