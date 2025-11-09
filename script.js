@@ -1,3 +1,21 @@
+window.addEventListener("DOMContentLoaded", () => {
+  const campusList = document.getElementById("campusList");
+  if (campusList) {
+    campusList.setAttribute("aria-describedby", "selectedCampus");
+    CAMPUSES.forEach(campus => {
+      const card = createCampusCard(campus);
+      campusList.appendChild(card);
+      card.addEventListener("click", () => selectCampus(card));
+      card.addEventListener("keydown", e => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          selectCampus(card);
+        }
+      });
+    });
+  }
+  // この下は今のあなたのコードそのままでOK
+});
 // デモ用ユーザー（c000000 / 000000）
 const DUMMY_USERS = [
   // 実際はログイン後にここから名前をセットする
