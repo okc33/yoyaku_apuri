@@ -221,7 +221,7 @@ a:hover {
 main.page {
   display: none;
   /* 上部余白を最小化（トップバー分の余白は不要な場合があるため） */
-  padding: 0.6rem 1.5rem 1.2rem;
+  padding: 0.25rem 1.5rem 1.2rem;
 }
 
 .page.active {
@@ -233,7 +233,7 @@ main.page {
   border-radius: 1rem;
   border: 1px solid rgba(148, 163, 184, 0.35);
   box-shadow: var(--shadow);
-  padding: 1.75rem;
+  padding: 1.1rem 1.25rem;
 }
 
 .note {
@@ -320,7 +320,7 @@ main.page {
   justify-content: center;
   align-items: stretch;
   /* ログイン画面上部を詰める */
-  padding: 0.6rem 1.5rem 1.6rem;
+  padding: 0.25rem 1.5rem 1.2rem;
 }
 
 .login-layout {
@@ -341,7 +341,7 @@ main.page {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 3rem 2.2rem;
+  padding: 2rem 2rem;
 }
 
 .login-hero-inner {
@@ -370,7 +370,7 @@ main.page {
 }
 
 .login-panel {
-  padding: 3rem 3rem 3.5rem;
+  padding: 2rem 2rem 2.5rem;
   display: flex;
   align-items: center;
 }
@@ -467,11 +467,11 @@ select:focus {
 @media (max-width: 600px) {
   .login-page {
     /* モバイル時も上部余白を最小に */
-    padding: 0.6rem 1rem 1.2rem;
+    padding: 0.2rem 1rem 1rem;
   }
 
   .login-panel {
-    padding: 2.2rem 1.5rem 2.6rem;
+    padding: 1.6rem 1.6rem 2.2rem;
   }
 }
 
@@ -484,7 +484,7 @@ select:focus {
 .campus-list {
   display: grid;
   gap: 1.1rem;
-  margin: 1.6rem 0;
+  margin: 1rem 0;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 }
 
