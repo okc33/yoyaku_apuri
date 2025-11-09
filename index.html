@@ -2,8 +2,8 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <title>キャンパスカーシェア予約</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>キャンパスカーシェア予約</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -25,7 +25,7 @@
         <h3 class="side-menu-heading">メニュー</h3>
         <ul class="side-menu-list">
           <li>マイページ（ダミー）</li>
-          <li>ログアウトはリロードしてください</li>
+          <li>ログアウト（リロードしてください）</li>
         </ul>
       </div>
       <div class="side-menu-block">
@@ -53,30 +53,20 @@
           <h2 class="login-title">ログイン</h2>
           <p class="login-description" id="loginDescription">学籍番号とパスワードを入力してください。</p>
           <label for="studentId" class="login-label">学籍番号</label>
-          <input
-            type="text"
-            id="studentId"
-            placeholder="例: c000000"
-            autocomplete="username"
-            required
-          />
+          <input type="text" id="studentId" placeholder="例: c000000" autocomplete="username" required />
+
           <label for="password" class="login-label">パスワード</label>
           <div class="login-password-field">
-            <input
-              type="password"
-              id="password"
-              placeholder="例: 000000"
-              autocomplete="current-password"
-              required
-            />
+            <input type="password" id="password" placeholder="例: 000000" autocomplete="current-password" required />
             <span class="login-password-icon" aria-hidden="true">👁</span>
           </div>
+
           <a href="#" class="login-link">パスワードをお忘れですか？</a>
           <button id="btnLogin" type="submit" class="btn primary login-submit">続ける</button>
           <p id="loginMessage" class="message" role="alert"></p>
           <p class="login-footer">
             アカウントが未登録ですか？
-            <a href="#" class="login-link">アカウントの作成</a>
+            <a href="#" class="login-link">アカウントを作成</a>
           </p>
         </form>
       </section>
@@ -88,18 +78,8 @@
     <div class="card campus-card-container">
       <h2 id="campusHeading">キャンパスを選択</h2>
       <p class="note">利用するキャンパスをタップして選んでください。</p>
-      <div
-        id="campusList"
-        class="campus-list"
-        role="list"
-        aria-labelledby="campusHeading"
-      ></div>
-      <p
-        id="selectedCampus"
-        class="selected-campus"
-        aria-live="polite"
-        role="status"
-      >
+      <div id="campusList" class="campus-list" role="list" aria-labelledby="campusHeading"></div>
+      <p id="selectedCampus" class="selected-campus" aria-live="polite" role="status">
         キャンパスをまだ選択していません。
       </p>
       <button id="btnCampusNext" class="btn primary" disabled>日時を選択</button>
@@ -159,5 +139,7 @@
   </main>
 
   <script src="script.js"></script>
+  
 </body>
 </html>
+
