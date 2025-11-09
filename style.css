@@ -487,7 +487,7 @@ select:focus {
 @media (max-width: 600px) {
   .login-page {
     /* モバイル時も上部余白を最小に */
-    padding: 0.2rem 1rem 1rem;
+    padding: 1.7rem 1rem 1rem;
   }
 
   .login-panel {
@@ -902,3 +902,7 @@ select:focus {
     padding: 1rem 1.1rem;
   }
 }
+
+/* ====== Login Spacing Override ====== */
+.login-page { padding-top: 1.75rem; }
+@media (max-width: 600px) { .login-page { padding-top: 1.7rem; } }
