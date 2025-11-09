@@ -2,6 +2,8 @@ window.addEventListener("DOMContentLoaded", () => {
   const campusList = document.getElementById("campusList");
   if (campusList) {
     campusList.setAttribute("aria-describedby", "selectedCampus");
+    // 二重描画を防ぐため、この初期化ブロックは属性設定のみで終了
+    return;
     CAMPUSES.forEach(campus => {
       const card = createCampusCard(campus);
       campusList.appendChild(card);
