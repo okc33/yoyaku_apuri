@@ -543,21 +543,20 @@ select:focus {
 
 .campus-image {
   position: relative;
-  /* 画像領域を1.5倍に拡大 */
-  flex: 0 0 330px;
+  /* 画像領域をレスポンシブに（約1.5倍相当〜最大360px） */
+  flex: 0 0 clamp(260px, 36vw, 360px);
+  aspect-ratio: 4 / 3;
   background: #f8fafc;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1rem;
+  padding: 0;
 }
 
 .campus-image img {
   width: 100%;
-  height: auto;
-  object-fit: contain;
-  /* 表示高さも1.5倍に */
-  max-height: 270px;
+  height: 100%;
+  object-fit: cover;
 }
 
 .campus-ribbon {
