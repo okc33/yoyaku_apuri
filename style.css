@@ -392,8 +392,8 @@ input, select {
 .campus-list {
   display: flex;
   flex-direction: column;
-  gap: 1.3rem;
-  margin: 1.4rem 0;
+  gap: 0.8rem;
+  margin: 1rem 0;
   width: 100%;
 }
 
@@ -416,12 +416,10 @@ input, select {
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
   outline: none;
-  max-height: 220px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
+  /* allow content to determine height */
+  max-height: none;
   gap: 8px;
-  margin: 6px 0;
+  margin: 0;
   box-sizing: border-box;
 }
 
@@ -465,11 +463,11 @@ input, select {
 .campus-card-body {
   padding: 8px 12px;
   font-size: 14px;
-  line-height: 1.3;
-  padding: 1.3rem 1.5rem 1.5rem;
+  line-height: 1.5;
+  padding: 1.1rem 1.2rem 1.2rem;
   display: flex;
   flex-direction: column;
-  gap: 0.85rem;
+  gap: 0.75rem;
   justify-content: space-between;
 }
 
@@ -915,8 +913,8 @@ input, select {
 .campus-list {
   display: flex;
   flex-direction: column;
-  gap: 1.3rem;
-  margin: 1.4rem 0;
+  gap: 0.8rem;
+  margin: 1rem 0;
   width: 100%;
 }
 
@@ -939,12 +937,10 @@ input, select {
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
   outline: none;
-  max-height: 220px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
+  /* allow content to determine height */
+  max-height: none;
   gap: 8px;
-  margin: 6px 0;
+  margin: 0;
   box-sizing: border-box;
 }
 
@@ -988,11 +984,11 @@ input, select {
 .campus-card-body {
   padding: 8px 12px;
   font-size: 14px;
-  line-height: 1.3;
-  padding: 1.3rem 1.5rem 1.5rem;
+  line-height: 1.5;
+  padding: 1.1rem 1.2rem 1.2rem;
   display: flex;
   flex-direction: column;
-  gap: 0.85rem;
+  gap: 0.75rem;
   justify-content: space-between;
 }
 
