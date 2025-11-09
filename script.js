@@ -306,9 +306,6 @@ function createCampusCard(campus) {
   card.setAttribute("role", "listitem");
   card.setAttribute("tabindex", "0");
   card.dataset.id = campus.id;
-  // 縦サイズを半分にする（上寄せで縮小）
-  card.style.transform = "scaleY(0.5)";
-  card.style.transformOrigin = "top";
   card.innerHTML = `
     <div class="campus-image">
       <img src="${campus.image}" alt="${campus.name}の写真" loading="lazy" />
