@@ -543,7 +543,8 @@ select:focus {
 
 .campus-image {
   position: relative;
-  flex: 0 0 220px;
+  /* 画像領域を1.5倍に拡大 */
+  flex: 0 0 330px;
   background: #f8fafc;
   display: flex;
   align-items: center;
@@ -555,7 +556,8 @@ select:focus {
   width: 100%;
   height: auto;
   object-fit: contain;
-  max-height: 180px;
+  /* 表示高さも1.5倍に */
+  max-height: 270px;
 }
 
 .campus-ribbon {
@@ -575,7 +577,8 @@ select:focus {
   display: flex;
   flex-direction: column;
   gap: 0.55rem;
-  padding: 1.1rem 1.35rem;
+  /* 文字ブロックをやや右に寄せる */
+  padding: 1.1rem 1.35rem 1.1rem 2rem;
 }
 
 .campus-card-header {
