@@ -425,6 +425,18 @@ window.addEventListener("DOMContentLoaded", () => {
       return;
     }
     currentUser = found;
+    localStorage.removeItem("reservations");
+    renderSideReservations();
+    selectedCampusId = null;
+    currentCampusId = null;
+    updateReserveCampusInfo();
+    resetReserveMessages();
+    document
+      .querySelectorAll(".campus-card.selected")
+      .forEach(el => el.classList.remove("selected"));
+    updateSelectedCampusDisplay();
+    document.getElementById("reserveDate").value = "";
+    renderReservationList("", "");
     loginMessage.textContent = "";
     document.getElementById("sideUserName").textContent = `${found.name} さん`;
     showPage("page-campus");
