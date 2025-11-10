@@ -580,6 +580,24 @@ window.addEventListener("DOMContentLoaded", () => {
     msg.className = "message ok";
     renderReservationList(date, currentCampusId);
     renderSideReservations();
+
+    // 予約完了モーダルを表示
+    const modal = document.getElementById("reservationModal");
+    const modalDesc = document.getElementById("reservationModalDesc");
+    const okBtn = document.getElementById("okReservationModal");
+    const closeBtn = document.getElementById("closeReservationModal");
+    if (modal && modalDesc) {
+      const campus = getCampusById(currentCampusId);
+      const campusName = campus ? campus.name : "";
+      if (typeof formatDateForDisplay === "function") {
+        modalDesc.textContent = `${formatDateForDisplay(date)} ${start} - ${endUser} に${campusName}で予約が完了しました。`;
+      } else {
+        modalDesc.textContent = `予約が完了しました。 ${date} ${start}-${endUser} ${campusName}`;
+      }
+      modal.classList.add("open");
+      modal.setAttribute("aria-hidden", "false");
+      if (okBtn) okBtn.focus(); else if (closeBtn) closeBtn.focus();
+    }
   });
 
   // 日付切替
@@ -594,3 +612,27 @@ window.addEventListener("DOMContentLoaded", () => {
   updateReserveCampusInfo();
   renderReservationList("", "");
 });
+
+// 予約完了モーダルのイベント設定
+(function initReservationModal() {
+  const modal = document.getElementById("reservationModal");
+  if (!modal) return;
+  const okBtn = document.getElementById("okReservationModal");
+  const closeBtn = document.getElementById("closeReservationModal");
+
+  const close = () => {
+    modal.classList.remove("open");
+    modal.setAttribute("aria-hidden", "true");
+  };
+
+  if (okBtn) okBtn.addEventListener("click", close);
+  if (closeBtn) closeBtn.addEventListener("click", close);
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) close();
+  });
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && modal.classList.contains("open")) {
+      close();
+    }
+  });
+})();

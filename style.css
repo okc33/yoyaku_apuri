@@ -903,3 +903,27 @@ select:focus {
 /* ====== Login Spacing Override ====== */
 .login-page { padding-top: 1.75rem; }
 @media (max-width: 600px) { .login-page { padding-top: 1.7rem; } }
+
+/* ====== 予約完了モーダル ====== */
+.modal {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 23, 42, 0.45);
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.modal.open { display: flex; }
+
+.modal-content {
+  width: min(90vw, 480px);
+  padding: 1.4rem 1.6rem;
+  border-radius: 1rem;
+}
+
+.modal-title { margin: 0 0 0.6rem; font-size: 1.2rem; }
+.modal-text { margin: 0 0 1rem; color: var(--muted); }
+.modal-actions { display: flex; justify-content: flex-end; gap: 0.6rem; }
