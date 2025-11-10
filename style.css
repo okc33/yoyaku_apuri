@@ -385,10 +385,15 @@ main.page {
   padding: 2rem 2rem 2.5rem;
   display: flex;
   align-items: center;
+  /* Center the login card horizontally */
+  justify-content: center;
 }
 
 .login-card {
   width: 100%;
+  /* Constrain width and center within panel */
+  max-width: 420px;
+  margin: 0 auto;
   padding: 0;
   border: none;
   box-shadow: none;
