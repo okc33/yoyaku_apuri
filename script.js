@@ -485,7 +485,8 @@ function updateCarSelectionDisplay() {
     btnReserveEl.disabled = true;
   } else {
     const car = CARS.find(c => c.id === selectedCarId);
-    info.textContent = car ? `${car.name}（${car.type}）を選択中` : "車種を選択していません。";
+    // 表示を車名ではなく「車種」（例：大型車）に変更
+    info.textContent = car ? `${car.type}を選択中` : "車種を選択していません。";
     btnReserveEl.disabled = false;
   }
 }
@@ -751,7 +752,7 @@ window.addEventListener("DOMContentLoaded", () => {
         const campus = getCampusById(currentCampusId);
         const campusName = campus ? campus.name : "";
         if (typeof formatDateForDisplay === "function") {
-          modalDesc.textContent = `${formatDateForDisplay(date)} ${start} - ${endUser} に${campusName}で${car ? car.name + "（" + car.type + "）" : ""}の予約が完了しました。`;
+          modalDesc.textContent = `${formatDateForDisplay(date)} ${start} - ${endUser} に${campusName}で${car ? car.type : ""}の予約が完了しました。`;
         } else {
           modalDesc.textContent = `予約が完了しました。 ${date} ${start}-${endUser} ${campusName}`;
         }
