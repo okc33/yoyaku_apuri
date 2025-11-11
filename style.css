@@ -920,3 +920,75 @@ select:focus {
   border: 2px solid rgba(37, 99, 235, 0.85); /* 太さを 2px に */
   box-shadow: 0 28px 60px rgba(37, 99, 235, 0.25);
 }
+
+/* --- カレンダー（date input）の視認性向上 --- */
+/* 入力欄自体を大きくして、表示上カレンダーが大きく見えるようにする */
+#reserveDate,
+input[type="date"] {
+  font-size: 1.25rem;
+  padding: 0.6rem 0.9rem;
+  height: 48px;
+  border-radius: 0.75rem;
+  border: 1px solid var(--border);
+  background: #fff;
+  box-shadow: none;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+  -webkit-appearance: none;
+  appearance: none;
+  display: inline-block;
+}
+
+/* WebKit のカレンダーアイコンを拡大（見た目を大きくする） */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  transform: scale(1.4);
+  margin-left: 6px;
+  opacity: 0.95;
+}
+
+/* 既存の拡大セレクタと併用 */
+.schedule-calendar,
+.date-picker,
+.calendar,
+.flatpickr-calendar,
+.picker {
+  transform-origin: top left;
+  pointer-events: auto;
+}
+
+/* --- 選択中キャンパスの強調（入力フォーカス風アニメーション） --- */
+@keyframes campusFocusRing {
+  0% { box-shadow: 0 0 0 0 rgba(37,99,235,0.18); }
+  100% { box-shadow: 0 0 0 8px rgba(37,99,235,0.06); }
+}
+
+/* ベースの遷移を用意 */
+.campus-card {
+  transition: border-color 0.18s ease, box-shadow 0.22s ease, transform 0.18s ease;
+  outline: none;
+}
+
+/* フォーカス可能時のスタイル（キーボードフォーカス対応） */
+.campus-card:focus-visible {
+  border: 3px solid var(--accent-strong);
+  animation: campusFocusRing 320ms ease forwards;
+  box-shadow: 0 20px 50px rgba(37,99,235,0.12);
+}
+
+/* クリックで選択された状態（常時表示） */
+.campus-card.selected {
+  border: 3px solid var(--accent-strong);
+  box-shadow: 0 28px 60px rgba(37, 99, 235, 0.18);
+  transform: translateY(-3px);
+}
+
+/* 小さく表示されていた選択アクションを明瞭に */
+.campus-card .campus-action {
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+/* さらに視認性補助（アクセシビリティ）: 選択時に要素内のリボン等も目立たせる */
+.campus-card.selected .campus-ribbon,
+.campus-card:focus-visible .campus-ribbon {
+  box-shadow: 0 6px 18px rgba(37,99,235,0.12);
+}
