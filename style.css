@@ -925,34 +925,51 @@ select:focus {
 /* 入力欄自体を大きくして、表示上カレンダーが大きく見えるようにする */
 #reserveDate,
 input[type="date"] {
-  font-size: 1.25rem;
-  padding: 0.6rem 0.9rem;
-  height: 48px;
-  border-radius: 0.75rem;
+  font-size: 1.05rem;        /* 開始時刻と同じ */
+  padding: 0.5rem 0.7rem;    /* 開始時刻と同じ */
+  height: auto;
+  border-radius: 0.65rem;
   border: 1px solid var(--border);
   background: #fff;
   box-shadow: none;
-  transition: border-color 0.18s ease, box-shadow 0.18s ease;
   -webkit-appearance: none;
   appearance: none;
   display: inline-block;
 }
 
-/* WebKit のカレンダーアイコンを拡大（見た目を大きくする） */
+/* WebKit インジケータの拡大をリセット */
 input[type="date"]::-webkit-calendar-picker-indicator {
-  transform: scale(1.4);
-  margin-left: 6px;
-  opacity: 0.95;
+  transform: none !important;
+  margin-left: 0;
+  opacity: 1;
 }
 
-/* 既存の拡大セレクタと併用 */
+/* 元のサイズに戻す：カレンダー要素の拡大を無効化 */
 .schedule-calendar,
 .date-picker,
 .calendar,
 .flatpickr-calendar,
 .picker {
-  transform-origin: top left;
+  transform: none !important;
+  transform-origin: unset;
   pointer-events: auto;
+}
+
+/* 選択中キャンパスカードのアクションボタン（予約など）を強調 */
+.campus-card.selected .campus-action {
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* 選択中キャンパスの右側（本文）を淡い青にして入力選択色と揃える */
+.campus-card.selected .campus-card-body {
+  background-color: rgba(37, 99, 235, 0.06); /* 学籍番号入力の選択色に合わせた淡い青 */
+  transition: background-color 220ms ease;
+}
+
+/* フォーカス時も同様の視覚効果を付与（キーボード操作対応） */
+.campus-card:focus-visible .campus-card-body {
+  background-color: rgba(37, 99, 235, 0.04);
 }
 
 /* --- 選択中キャンパスの強調（入力フォーカス風アニメーション） --- */
@@ -991,15 +1008,4 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .campus-card.selected .campus-ribbon,
 .campus-card:focus-visible .campus-ribbon {
   box-shadow: 0 6px 18px rgba(37,99,235,0.12);
-}
-
-/* 選択中キャンパスの右側（本文）を淡い青にして入力選択色と揃える */
-.campus-card.selected .campus-card-body {
-  background-color: rgba(37, 99, 235, 0.06); /* 学籍番号入力の選択色に合わせた淡い青 */
-  transition: background-color 220ms ease;
-}
-
-/* フォーカス時も同様の視覚効果を付与（キーボード操作対応） */
-.campus-card:focus-visible .campus-card-body {
-  background-color: rgba(37, 99, 235, 0.04);
 }
