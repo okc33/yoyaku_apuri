@@ -1,873 +1,877 @@
-:root {addEventListener("DOMContentLoaded", () => {
-  --bg: #f3f4f6;st = document.getElementById("campusList");
-  --card: #ffffff;{
-  --border: #d1d5db;tribute("aria-describedby", "selectedCampus");
-  --text: #111827;の初期化ブロックは属性設定のみで終了
+:root {
+  --bg: #f3f4f6;
+  --card: #ffffff;
+  --border: #d1d5db;
+  --text: #111827;
   --muted: #6b7280;
-  --accent: #2563eb;(campus => {
-  --accent-strong: #1d4ed8;mpusCard(campus);
-  --danger: #b91c1c;endChild(card);
-  --shadow: 0 14px 35px rgba(15, 23, 42, 0.08);ctCampus(card));
-}     card.addEventListener("keydown", e => {
-        if (e.key === "Enter" || e.key === " ") {
-* {       e.preventDefault();
-  box-sizing: border-box;rd);
-}       }
-      });
-html,);
+  --accent: #2563eb;
+  --accent-strong: #1d4ed8;
+  --danger: #b91c1c;
+  --shadow: 0 14px 35px rgba(15, 23, 42, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
 body {
-  margin: 0;なたのコードそのままでOK
+  margin: 0;
   padding: 0;
-  min-height: 100%;/ 000000）
-}onst DUMMY_USERS = [
-  // 実際はログイン後にここから名前をセットする
-/* 上部の予期せぬ余白対策（UA既定マージンの打ち消し） */rd: "000000", name: "名古屋 太郎" },
+  min-height: 100%;
+}
+
+/* 上部の予期せぬ余白対策（UA既定マージンの打ち消し） */
 h1, h2, h3, h4, h5, h6, p {
   margin-block-start: 0;
-}/ キャンパス一覧
-const CAMPUSES = [
+}
+
 /* ページ直下の最初の要素の上マージンが外にはみ出さないように */
 .page > *:first-child {
   margin-top: 0 !important;
-}   image: "img/takiko.jpg",
-    badge: "本部キャンパス",
-/* 念のためページ自体の上マージンも打ち消し */,
-main.page {e: "現在地から0.1km",
+}
+
+/* 念のためページ自体の上マージンも打ち消し */
+main.page {
   margin-top: 0 !important;
-}   features: ["24時間利用可", "EV 2台常備", "スタッフ常駐"],
-    availabilityLabel: "本日の空き状況",
-body {ailabilityValue: "車両数 5台",
+}
+
+body {
   font-family: "Segoe UI", "Hiragino Sans", "Yu Gothic", sans-serif;
   background: var(--bg);
   color: var(--text);
   /* 固定ヘッダー分を確保 */
-  padding-top: 54px;,
-}   name: "桜山キャンパス",
-    image: "img/sakurayama.jpg",
-img {adge: "医療系",
-  max-width: 100%;しています",
-  display: block;地から0.8km",
-}   address: "瑞穂区瑞穂通 1-2",
-    features: ["キャンパス間送迎", "充電スポット完備", "車内Wi-Fi"],
-a { availabilityLabel: "ピーク前料金",
-  color: var(--accent);"車両数 3台",
+  padding-top: 54px;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: var(--accent);
   text-decoration: none;
-}   reviews: 98,
-  },
+}
+
 a:hover {
   text-decoration: underline;
-}   name: "田辺通キャンパス",
-    image: "img/tanabe.jpg",
+}
+
 /* ====== ヘッダーとサイドメニュー ====== */
-.topbar {n: "朝の予約がしやすい",
-  height: 54px;現在地から1.9km",
-  background: #ffffff;-5",
-  border-bottom: 1px solid var(--border);ICカード解錠"],
-  display: flex;Label: "おすすめ枠",
-  align-items: center; "車両数 2台",
+.topbar {
+  height: 54px;
+  background: #ffffff;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
   padding: 0 0.75rem;
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;tachikusa",
-  z-index: 40;キャンパス",
-}   image: "img/kitachikusa.jpg",
-    badge: "芸術系",
-.icon-btn { "夜間の利用が人気です",
-  background: transparent;,
-  border: none;種区北千種 2-10",
-  font-size: 1.5rem;用可", "照明付き駐車場", "入門ゲート24h"],
-  line-height: 1;abel: "学生割適用中",
-  padding: 0.2rem 0.5rem;両数 4台",
+  right: 0;
+  z-index: 40;
+}
+
+.icon-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  line-height: 1;
+  padding: 0.2rem 0.5rem;
   cursor: pointer;
   color: var(--text);
-} },
-];
+}
+
 .app-title {
   font-size: 1rem;
-  margin: 0 0 0 0.5rem; 3台
+  margin: 0 0 0 0.5rem;
   font-weight: 600;
-} { id: "car-blue", image: "img/blue.png", name: "Blue", type: "自動運転", typeId: 1, available: true },
-  { id: "car-red", image: "img/red.png", name: "Red", type: "EV", typeId: 2, available: false }, // EVのうち1台は埋まっている
-.spacer {car-green", image: "img/green.png", name: "Green", type: "EV", typeId: 2, available: true },
-  flex: 1;ar-pink", image: "img/pink.png", name: "Pink", type: "大型車", typeId: 3, available: false }, // 大型車のうち1台は埋まっている
-} { id: "car-purple", image: "img/purple.png", name: "Purple", type: "大型車", typeId: 3, available: true },
-  { id: "car-yellow", image: "img/yellow.png", name: "Yellow", type: "大型車", typeId: 3, available: true },
+}
+
+.spacer {
+  flex: 1;
+}
+
 .side-menu {
   position: fixed;
-  inset: 0 auto 0 0;ll;
-  width: 260px;usId = null;
+  inset: 0 auto 0 0;
+  width: 260px;
   transform: translateX(-100%);
-  background: #ffffff;ll; // 追加：選択された車
+  background: #ffffff;
   border-right: 1px solid var(--border);
   transition: transform 0.25s ease;
-  z-index: 60;NUTES = 7 * 60;
-  display: flex;S = 21 * 60;
-  flex-direction: column;MINUTES = 30;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
 }
-/* ===== 共通処理 ===== */
-.side-menu.open {(id) {
-  transform: translateX(0);(".page").forEach(p => p.classList.remove("active"));
-} document.getElementById(id).classList.add("active");
+
+.side-menu.open {
+  transform: translateX(0);
 }
+
 .side-menu-header {
-  display: flex;ervations() {
-  justify-content: space-between;m("reservations");
-  align-items: center;rse(raw) : [];
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 0.9rem 1rem;
   border-bottom: 1px solid var(--border);
-}unction saveReservations(list) {
-  localStorage.setItem("reservations", JSON.stringify(list));
+}
+
 .user-name {
   font-weight: 600;
-}unction timeToMinutes(t) {
-  const [h, m] = t.split(":").map(Number);
+}
+
 .side-menu-content {
   padding: 1rem 1.1rem 1.5rem;
   overflow-y: auto;
-  display: flex;ToTime(mins) {
-  flex-direction: column;ns % MINUTES_PER_DAY) + MINUTES_PER_DAY) % MINUTES_PER_DAY;
-  gap: 1rem;Math.floor(normalized / 60);
-} const m = normalized % 60;
-  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
 .side-menu-block {
   border: 1px solid #e5e7eb;
-  border-radius: 1rem;hDay(mins) {
-  background: #f8fafc;th.floor(mins / MINUTES_PER_DAY);
-  padding: 1rem;inutesToTime(mins);
+  border-radius: 1rem;
+  background: #f8fafc;
+  padding: 1rem;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
-.side-menu-heading {Id(id) {
-  margin: 0 0 0.65rem;(c => c.id === id) || null;
+.side-menu-heading {
+  margin: 0 0 0.65rem;
   font-size: 0.78rem;
   text-transform: uppercase;
-  letter-spacing: 0.08em;play(dateStr) {
-  color: #64748b;eturn "";
-} const [y, m, d] = dateStr.split("-");
-  return `${m}/${d}`;
+  letter-spacing: 0.08em;
+  color: #64748b;
+}
+
 .side-menu-list {
   list-style: none;
-  padding: 0;複していないか
-  margin: 0;imeAvailable(dateStr, campusId, startMinutes, endMinutes) {
-  font-size: 0.85rem;= loadReservations().filter(r => {
-}   return r.date === dateStr && r.campusId === campusId;
-  });
+  padding: 0;
+  margin: 0;
+  font-size: 0.85rem;
+}
+
 .side-menu-list li + li {
-  margin-top: 0.5rem;.every(reservation => {
-}   const existingStart = reservation.startMinutes;
-    const existingEnd = reservation.endMinutes;
+  margin-top: 0.5rem;
+}
+
 .side-reservations {
   list-style: none;
-  padding: 0;inutes < existingEnd && endMinutes > existingStart) ||
-  margin: 0;ingStart < endMinutes && existingEnd > startMinutes);
+  padding: 0;
+  margin: 0;
   display: flex;
   flex-direction: column;
   gap: 0.7rem;
   font-size: 0.82rem;
 }
-// 指定日の予約を描画
-.side-reservations li {ionList(dateStr, campusId) {
-  border: 1px solid rgba(37, 99, 235, 0.15);rvationList");
+
+.side-reservations li {
+  border: 1px solid rgba(37, 99, 235, 0.15);
   border-radius: 0.75rem;
   padding: 0.65rem 0.75rem;
-  background: #ffffff;pusId) {
-  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.08);選択すると予約が表示されます。</li>';
+  background: #ffffff;
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.08);
   display: grid;
   gap: 0.35rem;
 }
-  const reservations = loadReservations().filter(r => {
-.side-resv-text { === dateStr && r.campusId === campusId;
+
+.side-resv-text {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;ons.length === 0) {
-}   list.innerHTML = '<li class="empty">この日の予約はありません。</li>';
-    return;
+  gap: 0.25rem;
+}
+
 .side-resv-date {
   font-size: 0.75rem;
   font-weight: 600;
-}   .sort((a, b) => a.startMinutes - b.startMinutes)
-    .forEach(reservation => {
-.side-resv-time {s = getCampusById(reservation.campusId);
-  font-size: 0.78rem;e = campus ? campus.name : reservation.campusId;
-  color: #1e293b;document.createElement("li");
-}     li.innerHTML = `
-        <div class="resv-time">${reservation.start} - ${reservation.endUser}</div>
-.side-resv-campus {"resv-meta">
-  font-size: 0.75rem;="resv-campus">${campusName}</span>
-  color: var(--accent);resv-car">${reservation.carType || ""}</span>
+}
+
+.side-resv-time {
+  font-size: 0.78rem;
+  color: #1e293b;
+}
+
+.side-resv-campus {
+  font-size: 0.75rem;
+  color: var(--accent);
   font-weight: 600;
-}     `;
-      list.appendChild(li);
+}
+
 .side-resv-image {
   width: 100%;
   aspect-ratio: 4 / 3;
   border-radius: 0.6rem;
-  overflow: hidden;Reservations() {
-  border: 1px solid rgba(37, 99, 235, 0.2);eReservationList");
-} const reservations = loadReservations();
+  overflow: hidden;
+  border: 1px solid rgba(37, 99, 235, 0.2);
+}
 
 .side-resv-image img {
   width: 100%;
-  height: 100%;ons.length === 0) {
-  object-fit: cover; "<li>まだ予約がありません。</li>";
-}   return;
-  }
+  height: 100%;
+  object-fit: cover;
+}
+
 .overlay {
   position: fixed;
-  inset: 0;)
+  inset: 0;
   background: rgba(15, 23, 42, 0.35);
-  opacity: 0;r => {
-  pointer-events: none;tCampusById(r.campusId);
-  transition: opacity 0.25s ease; campus.name : r.campusId;
-  z-index: 50;em = document.createElement("li");
-}     item.innerHTML = `
-        <div class="side-resv-text">
-.overlay.show { class="side-resv-date">${formatDateForDisplay(r.date)}</span>
-  opacity: 1;an class="side-resv-time">${r.start} - ${r.endUser}</span>
-  pointer-events: auto;side-resv-campus">${campusName}</span>
-}       </div>
-        ${
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+  z-index: 50;
+}
+
+.overlay.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
 /* ====== ページ共通 ====== */
-main.page { ? `<div class="side-resv-image"><img src="${campus.image}" alt="${campusName}の写真" loading="lazy" /></div>`
+main.page {
   display: none;
   /* 上部余白を最小化（トップバー分の余白は不要な場合があるため） */
   padding: 0.25rem 1.5rem 1.2rem;
-}     list.appendChild(item);
-    });
+}
+
 .page.active {
   display: block;
-}unction updateReserveCampusInfo() {
-  const nameEl = document.getElementById("reserveCampusName");
-.card { distanceEl = document.getElementById("reserveCampusDistance");
-  background: var(--card);nt.getElementById("reserveCampusSummary");
-  border-radius: 1rem;) {
+}
+
+.card {
+  background: var(--card);
+  border-radius: 1rem;
   border: 1px solid rgba(148, 163, 184, 0.35);
-  box-shadow: var(--shadow); "";
-  padding: 1.1rem 1.25rem;'<p class="schedule-summary-empty">キャンパス情報がここに表示されます。</p>';
-}   return;
-  }
+  box-shadow: var(--shadow);
+  padding: 1.1rem 1.25rem;
+}
+
 .note {
-  margin: 0.2rem 0 0;ampusById(currentCampusId);
+  margin: 0.2rem 0 0;
   color: var(--muted);
-  font-size: 0.9rem;nt = "キャンパス未選択";
-}   distanceEl.textContent = "";
-    summaryEl.innerHTML = '<p class="schedule-summary-empty">キャンパス情報が取得できませんでした。</p>';
-.btn {turn;
+  font-size: 0.9rem;
+}
+
+.btn {
   display: inline-flex;
   align-items: center;
-  justify-content: center;pus.name;
-  border-radius: 999px;t = campus.distance;
+  justify-content: center;
+  border-radius: 999px;
   border: 1px solid var(--accent);
-  background: transparent;ader">
-  color: var(--accent);ary-badge">${campus.badge}</span>
-  font-size: 0.95rem;mary-rating">
-  font-weight: 600;="star">★</span>
-  padding: 0.55rem 1.6rem;ing}</span>
-  cursor: pointer;s="reviews">(${campus.reviews}件)</span>
+  background: transparent;
+  color: var(--accent);
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 0.55rem 1.6rem;
+  cursor: pointer;
   transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
-}   </div>
-    <div class="summary-main">
-.btn:hover,class="summary-image">
-.btn:focus-visible {campus.image}" alt="${campus.name}の写真" loading="lazy" />
+}
+
+.btn:hover,
+.btn:focus-visible {
   background: rgba(37, 99, 235, 0.08);
-}     <div class="summary-body">
-        <h3 class="summary-title">${campus.name}</h3>
-.btn.primary {ss="summary-distance">${campus.distance}</p>
-  background: var(--accent);dress">${campus.address}</p>
-  color: #ffffff;="summary-features">
-  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.25);i>`).join("")}
-}       </ul>
-        <div class="summary-availability">
-.btn.primary:hover,ss="label">${campus.availabilityLabel}</span>
-.btn.primary:focus-visible {">${campus.availabilityValue}</span>
+}
+
+.btn.primary {
+  background: var(--accent);
+  color: #ffffff;
+  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.25);
+}
+
+.btn.primary:hover,
+.btn.primary:focus-visible {
   background: var(--accent-strong);
-}     </div>
-    </div>
+}
+
 .btn:disabled {
   opacity: 0.45;
   cursor: default;
-  box-shadow: none;veMessages() {
-} const check = document.getElementById("checkResult");
-  const reserve = document.getElementById("reserveMessage");
-.link-btn {) {
-  background: none;nt = "";
-  border: none;Name = "message";
+  box-shadow: none;
+}
+
+.link-btn {
+  background: none;
+  border: none;
   padding: 0;
   color: var(--accent);
-  cursor: pointer;ntent = "";
-  font-size: 0.9rem;e = "message";
-} }
+  cursor: pointer;
+  font-size: 0.9rem;
 }
-.link-btn:hover,
-.link-btn:focus-visible {==== */
-  text-decoration: underline;) {
-} const startSel = document.getElementById("startTime");
-  const endSel = document.getElementById("endTimeUser");
-.message {.innerHTML = "";
-  margin-top: 0.65rem;";
-  font-size: 0.85rem;
-  min-height: 1.2em;ART_MINUTES; mins <= END_MINUTES - 15; mins += 15) {
-  color: var(--muted);oTime(mins);
-}   const opt = document.createElement("option");
-    opt.value = t;
-.message.ok {ontent = t;
-  color: #166534;ndChild(opt);
-} }
 
-.message.error {= START_MINUTES + 15; mins <= END_MINUTES; mins += 15) {
-  color: var(--danger);Time(mins);
-}   const opt = document.createElement("option");
-    opt.value = t;
-.list {.textContent = t;
-  list-style: none;ild(opt);
+.link-btn:hover,
+.link-btn:focus-visible {
+  text-decoration: underline;
+}
+
+.message {
+  margin-top: 0.65rem;
+  font-size: 0.85rem;
+  min-height: 1.2em;
+  color: var(--muted);
+}
+
+.message.ok {
+  color: #166534;
+}
+
+.message.error {
+  color: var(--danger);
+}
+
+.list {
+  list-style: none;
   padding: 0;
   margin: 0;
 }
-// 終了時刻は開始より後だけ
-/* ====== ログイン ====== */ {
-.login-page {Sel = document.getElementById("startTime");
-  display: flex; document.getElementById("endTimeUser");
-  justify-content: center;l.value;
-  /* 画面上部に寄せる */ = timeToMinutes(startVal);
+
+/* ====== ログイン ====== */
+.login-page {
+  display: flex;
+  justify-content: center;
+  /* 画面上部に寄せる */
   align-items: flex-start;
-  /* ログイン画面上部を詰める */options).forEach(opt => {
-  padding: 1.75rem 1.5rem 1.2rem;opt.value);
-}   opt.disabled = endMin <= startMin;
-  });
+  /* ログイン画面上部を詰める */
+  padding: 1.75rem 1.5rem 1.2rem;
+}
+
 .login-layout {
-  width: 100%;alue && timeToMinutes(endSel.value) <= startMin) {
-  max-width: 1080px;";
+  width: 100%;
+  max-width: 1080px;
   background: #ffffff;
   border-radius: 1.5rem;
   border: 1px solid rgba(148, 163, 184, 0.35);
   box-shadow: 0 28px 55px rgba(15, 23, 42, 0.12);
-  display: grid;ampusCard(campus) {
+  display: grid;
   grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-  overflow: hidden;"campus-card";
-} card.setAttribute("role", "listitem");
-  card.setAttribute("tabindex", "0");
-.login-hero {t.id = campus.id;
+  overflow: hidden;
+}
+
+.login-hero {
   background: radial-gradient(circle at top left, rgba(37, 99, 235, 0.18), rgba(14, 165, 233, 0.25)), linear-gradient(135deg, #1d4ed8, #22d3ee);
-  color: #ffffff;ampus-image">
-  display: flex;${campus.image}" alt="${campus.name}の写真" loading="lazy" />
-  align-items: center;pus-ribbon">${campus.ribbon}</span>
+  color: #ffffff;
+  display: flex;
+  align-items: center;
   justify-content: center;
-  padding: 2rem 2rem;s-card-body">
-}     <div class="campus-card-header">
-        <span class="campus-badge">${campus.badge}</span>
-.login-hero-inner {"campus-rating">
-  display: grid;class="star">★</span>
-  gap: 1.5rem;n>${campus.rating}</span>
-  justify-items: center;eviews">(${campus.reviews}件)</span>
+  padding: 2rem 2rem;
+}
+
+.login-hero-inner {
+  display: grid;
+  gap: 1.5rem;
+  justify-items: center;
   text-align: center;
   max-width: 340px;
-}     <h3>${campus.name}</h3>
-      <p class="campus-distance">${campus.distance} · ${campus.address}</p>
-.login-hero-logo {ampus-features">
-  width: min(220px, 70%);.map(f => `<li>${f}</li>`).join("")}
+}
+
+.login-hero-logo {
+  width: min(220px, 70%);
   filter: drop-shadow(0 10px 25px rgba(15, 23, 42, 0.25));
-}     <div class="campus-footer">
-        <div class="campus-availability">
-.login-hero-title {ss="availability-label">${campus.availabilityLabel}</span>
-  font-size: 1.4rem;s="availability-value">${campus.availabilityValue}</span>
-  margin: 0;v>
-  letter-spacing: 0.04em;s-action">タップして選択</div>
-}     </div>
-    </div>
+}
+
+.login-hero-title {
+  font-size: 1.4rem;
+  margin: 0;
+  letter-spacing: 0.04em;
+}
+
 .login-banner {
-  margin: 0;d;
+  margin: 0;
   font-size: 1rem;
   line-height: 1.6;
-}/ 追加：車種カード作成（表示文言変更：車名→車種名表記）
-function createCarCard(car) {
-.login-panel {ocument.createElement("li");
-  padding: 2rem 2rem 2.5rem;d car-card";
-  display: flex;= car.id;
-  align-items: center;e", "button");
+}
+
+.login-panel {
+  padding: 2rem 2rem 2.5rem;
+  display: flex;
+  align-items: center;
   /* Center the login card horizontally */
   justify-content: center;
-} // 表示名を車種ラベルにする（自動運転車 / EV車 / 大型車）
-  const displayTypeLabel = car.type === "自動運転" ? "自動運転車" : (car.type === "EV" ? "EV車" : "大型車");
+}
+
 .login-card {
-  width: 100%;ベルは削除し、中央の見出し（黒文字）だけ残す
+  width: 100%;
   /* Constrain width and center within panel */
-  max-width: 420px;pus-card-body">
-  margin: 0 auto;car-title">${displayTypeLabel}</h3>
+  max-width: 420px;
+  margin: 0 auto;
   padding: 0;
-  border: none;s="car-image-wrap">ne;
-  box-shadow: none;{car.image}" alt="${displayTypeLabel}の写真" loading="lazy" />
-}       ${car.available ? '' : '<span class="campus-ribbon small unavailable-ribbon">予約不可</span>'}}
-      </div>
+  border: none;
+  box-shadow: none;
+}
+
 .login-title {
-  margin: 0 0 0.75rem;us-footer">
-  font-size: 1.35rem;ampus-action ${car.available ? '' : 'unavailable'}">${car.available ? '選択可能' : '予約済み'}</div> 1.35rem;
-}     </div>}
-    </div>
+  margin: 0 0 0.75rem;
+  font-size: 1.35rem;
+}
+
 .login-description {
   margin: 0 0 1.6rem;
-  color: var(--muted);(--muted);
-  font-size: 0.92rem;er("click", () => selectCar(li));e: 0.92rem;
-}   li.addEventListener("keydown", e => {
-      if (e.key === "Enter" || e.key === " ") {
-.login-label {entDefault();
-  display: block;(li);
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.login-label {
+  display: block;
   font-size: 0.88rem;
   font-weight: 600;
   margin-bottom: 0.35rem;
-}   li.setAttribute("aria-disabled", "true");
-  }
-input,rn li;
+}
+
+input,
 select {
   width: 100%;
-  border-radius: 0.65rem;mpusDisplay() {order-radius: 0.65rem;
-  border: 1px solid var(--border);tElementById("selectedCampus");x solid var(--border);
-  padding: 0.6rem 0.7rem;t.getElementById("btnCampusNext"); padding: 0.6rem 0.7rem;
-  font-size: 0.95rem;Id) {  font-size: 0.95rem;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease; 0.2s ease;
-}   nextBtn.disabled = true;
-    return;
-input:focus,
-select:focus { = CAMPUSES.find(c => c.id === selectedCampusId);
-  outline: none;
-  border-color: var(--accent); `${campus.name}を選択中です。（${campus.distance}）`;lor: var(--accent);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);px rgba(37, 99, 235, 0.2);
-} }
-}
-.login-password-field {
-  position: relative;(card) {
-  margin-bottom: 1rem;: 1rem;
-}   .querySelectorAll(".campus-card.selected")
-    .forEach(el => el.classList.remove("selected"));
-.login-password-field input {d");
-  padding-right: 2.5rem;d.dataset.id;right: 2.5rem;
-} updateSelectedCampusDisplay();
-}
-.login-password-icon {
-  position: absolute;ection() {
-  top: 50%;tainer = document.getElementById("carSelection");
-  right: 0.8rem;ocument.getElementById("carList"); right: 0.8rem;
-  transform: translateY(-50%);getElementById("carSelectionMessage");  transform: translateY(-50%);
-  font-size: 1rem;| !list) return;
-  color: var(--muted);
-} selectedCarId = null;
-  container.style.display = "block";
-.login-link {textContent = "車種を選択してください（必須）";
-  font-size: 0.85rem;
-} CARS.forEach(car => {
-    const card = createCarCard(car);
-.login-submit {Child(card);
-  margin-top: 1.4rem;4rem;
-  width: 100%;ectionDisplay();
+  border-radius: 0.65rem;
+  border: 1px solid var(--border);
+  padding: 0.6rem 0.7rem;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.login-footer {rSelection() {n-footer {
-  font-size: 0.85rem;ocument.getElementById("carSelection");
-  color: var(--muted);rn; color: var(--muted);
-  margin-top: 1.4rem;play = "none";  margin-top: 1.4rem;
-} selectedCarId = null;
-  updateCarSelectionDisplay();
+input:focus,
+select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+.login-password-field {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.login-password-field input {
+  padding-right: 2.5rem;
+}
+
+.login-password-icon {
+  position: absolute;
+  top: 50%;
+  right: 0.8rem;
+  transform: translateY(-50%);
+  font-size: 1rem;
+  color: var(--muted);
+}
+
+.login-link {
+  font-size: 0.85rem;
+}
+
+.login-submit {
+  margin-top: 1.4rem;
+  width: 100%;
+}
+
+.login-footer {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-top: 1.4rem;
+}
+
 @media (max-width: 920px) {
   .login-layout {
-    grid-template-columns: 1fr; 1fr;
-  }ocument.querySelectorAll(".car-card.selected").forEach(el => el.classList.remove("selected"));
-  cardEl.classList.add("selected");
-  .login-hero { = cardEl.dataset.id;  .login-hero {
-    padding: 2.5rem 2rem;ay();
+    grid-template-columns: 1fr;
   }
 
-  .login-panel {arSelectionDisplay() {
-    padding: 2.5rem 2.2rem 3rem;ntById("selectedCarInfo");m;
-  }onst btnReserveEl = document.getElementById("btnReserve"); }
-} if (!info || !btnReserveEl) return;}
-  if (!selectedCarId) {
-@media (max-width: 600px) {選択していません。";
-  .login-page {l.disabled = true;
+  .login-hero {
+    padding: 2.5rem 2rem;
+  }
+
+  .login-panel {
+    padding: 2.5rem 2.2rem 3rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .login-page {
     /* モバイル時も上部余白を最小に */
-    padding: 1.7rem 1rem 1rem; c.id === selectedCarId);m 1rem;
-  } info.textContent = car ? `${car.name}（${car.type}）を選択中` : "車種を選択していません。";
-    btnReserveEl.disabled = false;
+    padding: 1.7rem 1rem 1rem;
+  }
+
   .login-panel {
     padding: 1.6rem 1.6rem 2.2rem;
   }
-}indow.addEventListener("DOMContentLoaded", () => {
-  const campusList = document.getElementById("campusList");
-/* ====== キャンパス選択 ====== */aria-describedby", "selectedCampus");* ====== キャンパス選択 ====== */
-.campus-card-container {s => {.campus-card-container {
-  max-width: 1080px;ateCampusCard(campus);
-  margin: 0 auto;pendChild(card);
-}   // クリックで選択して次へ
-    card.addEventListener("click", () => {
-.campus-list {mpus(card);
-  display: grid;pusId = card.dataset.id;
+}
+
+/* ====== キャンパス選択 ====== */
+.campus-card-container {
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+.campus-list {
+  display: grid;
   gap: 1.1rem;
-  margin: 1rem 0;Listener("keydown", (e) => {
-  /* 1列で縦に積む */ === "Enter" || e.key === " ") {
+  margin: 1rem 0;
+  /* 1列で縦に積む */
   grid-template-columns: 1fr;
-}       selectCampus(card);
-        currentCampusId = card.dataset.id;
+}
+
 .campus-card {
   display: flex;
   flex-direction: column;
-  background: #ffffff;Display();
+  background: #ffffff;
   border-radius: 1.1rem;
-  border: 1px solid rgba(148, 163, 184, 0.35);35);
-  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);(15, 23, 42, 0.08);
-  cursor: pointer;t = document.getElementById("startTime");
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;rm 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-  overflow: hidden;Input = document.getElementById("reserveDate"); hidden;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  overflow: hidden;
   outline: none;
   min-height: 190px;
-} const carSelectionContainer = document.getElementById("carSelection");
-  if (carSelectionContainer) carSelectionContainer.style.display = "none";
-@media (min-width: 640px) {
-  .campus-card {dEventListener("change", () => limitEndTimes());
-    flex-direction: row;ener("change", resetReserveMessages);
-  }imitEndTimes();
 }
-  // ハンバーガー
-.campus-card:hover,ocument.getElementById("menuBtn");
-.campus-card:focus-visible {getElementById("sideMenu");-visible {
-  transform: translateY(-4px);ElementById("overlay");  transform: translateY(-4px);
-  box-shadow: 0 24px 55px rgba(37, 99, 235, 0.18);Menu");w: 0 24px 55px rgba(37, 99, 235, 0.18);
+
+@media (min-width: 640px) {
+  .campus-card {
+    flex-direction: row;
+  }
+}
+
+.campus-card:hover,
+.campus-card:focus-visible {
+  transform: translateY(-4px);
+  box-shadow: 0 24px 55px rgba(37, 99, 235, 0.18);
   border-color: rgba(37, 99, 235, 0.55);
-} function openMenu() {
-    sideMenu.classList.add("open");
-.campus-card.selected {dd("show");
-  border-color: rgba(37, 99, 235, 0.75);5);
-  box-shadow: 0 28px 60px rgba(37, 99, 235, 0.25);5);
-}   sideMenu.classList.remove("open");
-    overlay.classList.remove("show");
+}
+
+.campus-card.selected {
+  border-color: rgba(37, 99, 235, 0.75);
+  box-shadow: 0 28px 60px rgba(37, 99, 235, 0.25);
+}
+
 .campus-image {
-  position: relative;tener("click", openMenu);
-  /* 画像領域をレスポンシブに（約1.5倍相当〜最大360px） */ closeMenuFn);
-  flex: 0 0 clamp(260px, 36vw, 360px);oseMenuFn);;
+  position: relative;
+  /* 画像領域をレスポンシブに（約1.5倍相当〜最大360px） */
+  flex: 0 0 clamp(260px, 36vw, 360px);
   aspect-ratio: 4 / 3;
   background: #f8fafc;
-  display: flex;m = document.getElementById("loginForm");
-  align-items: center; document.getElementById("loginMessage");
-  justify-content: center;er("submit", e => {  justify-content: center;
-  padding: 0;Default();: 0;
-}   const id = document.getElementById("studentId").value.trim();
-    const pw = document.getElementById("password").value.trim();
-.campus-image img {UMMY_USERS.find(user => user.studentId === id && user.password === pw);
-  width: 100%;) {
-  height: 100%;age.textContent = "学籍番号かパスワードが違います。";
-  object-fit: cover;lassName = "message error";
-}     return;
-    }
-.campus-ribbon {= found;
-  position: absolute;veItem("reservations");
-  top: 0.9rem;Reservations();;
-  right: 0.9rem;usId = null;ht: 0.9rem;
-  background: rgba(15, 118, 110, 0.9);9);
-  color: #ffffff;CampusInfo();
-  padding: 0.32rem 0.7rem;;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.campus-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.campus-ribbon {
+  position: absolute;
+  top: 0.9rem;
+  right: 0.9rem;
+  background: rgba(15, 118, 110, 0.9);
+  color: #ffffff;
+  padding: 0.32rem 0.7rem;
   border-radius: 999px;
-  font-size: 0.7rem;All(".campus-card.selected")
-  font-weight: 600;> el.classList.remove("selected"));
-}   updateSelectedCampusDisplay();
-    document.getElementById("reserveDate").value = "";
-.campus-card-body {onList("", "");
-  flex: 1;essage.textContent = "";
-  display: flex;ElementById("sideUserName").textContent = `${found.name} さん`;
-  flex-direction: column;");
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.campus-card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   gap: 0.55rem;
   /* 文字ブロックをやや右に寄せる */
   padding: 1.1rem 1.35rem 1.1rem 2rem;
-} document.getElementById("btnCampusNext").addEventListener("click", () => {
-    if (!selectedCampusId) {
-.campus-card-header {card-header {
+}
+
+.campus-card-header {
   display: flex;
-  justify-content: space-between;pusId;
-  align-items: center;erve");
-  gap: 0.65rem;veCampusInfo();m;
-}   renderReservationList(reserveDateInput.value, currentCampusId);
-  });
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.65rem;
+}
+
 .campus-badge {
   background: rgba(37, 99, 235, 0.1);
-  color: var(--accent);Id("btnBackToCampus").addEventListener("click", () => {
-  padding: 0.25rem 0.6rem;);ding: 0.25rem 0.6rem;
-  border-radius: 999px;ull;  border-radius: 999px;
-  font-size: 0.72rem;usInfo();size: 0.72rem;
-  font-weight: 600;sages();
-  white-space: nowrap;alue = "";
-}   document
-      .querySelectorAll(".campus-card.selected")
-.campus-rating {l => el.classList.remove("selected"));
-  display: inline-flex;null;
-  align-items: center;usDisplay();s: center;
-  gap: 0.25rem;vationList("", "");
+  color: var(--accent);
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.campus-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
   font-size: 0.78rem;
   color: #1f2937;
-} // 空き確認
-  document.getElementById("btnCheck").addEventListener("click", () => {
-.campus-rating .star {ent.getElementById("reserveDate").value;us-rating .star {
-  color: #f59e0b; document.getElementById("startTime").value;  color: #f59e0b;
-}   const endUser = document.getElementById("endTimeUser").value;
-    const result = document.getElementById("checkResult");
-.campus-rating .reviews {cument.getElementById("reserveMessage");
+}
+
+.campus-rating .star {
+  color: #f59e0b;
+}
+
+.campus-rating .reviews {
   color: var(--muted);
-}   result.className = "message";
-    if (reserveMsg) {
-.campus-card h3 {textContent = "";
-  margin: 0;eMsg.className = "message";  margin: 0;
+}
+
+.campus-card h3 {
+  margin: 0;
   font-size: 1.1rem;
 }
-    if (!currentCampusId) {
-.campus-distance {ontent = "キャンパスを選び直してください。";
-  margin: 0;.className = "message error";gin: 0;
-  color: var(--muted);();  color: var(--muted);
-  font-size: 0.82rem;
-}   }
 
-.campus-features {start || !endUser) {
-  margin: 0;.textContent = "日付・開始・終了を入力してください。";
-  padding: 0;className = "message error";ding: 0;
-  list-style: none;ion();  list-style: none;
+.campus-distance {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.campus-features {
+  margin: 0;
+  padding: 0;
+  list-style: none;
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
-}   const startMin = timeToMinutes(start);
-    const endUserMin = timeToMinutes(endUser);
-.campus-features li {in = endUserMin + RESERVATION_BUFFER_MINUTES;us-features li {
+}
+
+.campus-features li {
   background: #eef2ff;
-  color: #1f2937;TimeAvailable(date, currentCampusId, startMin, endWithGapMin);
+  color: #1f2937;
   border-radius: 999px;
-  padding: 0.28rem 0.6rem; "予約できます。車種を選択してください。";
-  font-size: 0.72rem;e = "message ok";  font-size: 0.72rem;
-}     renderCarSelection();
-    } else {
-.campus-footer {tContent = "すでに予約があります。別の時間にしてください。";
-  margin-top: auto;ame = "message error";
-  display: flex;ection();
+  padding: 0.28rem 0.6rem;
+  font-size: 0.72rem;
+}
+
+.campus-footer {
+  margin-top: auto;
+  display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 0.75rem;
   padding-top: 0.6rem;
-  border-top: 1px solid rgba(148, 163, 184, 0.3);istener("click", () => {der-top: 1px solid rgba(148, 163, 184, 0.3);
-  font-size: 0.8rem;ument.getElementById("reserveDate").value;t-size: 0.8rem;
-  color: #1f2937; document.getElementById("startTime").value;  color: #1f2937;
-}   const endUser = document.getElementById("endTimeUser").value;
-    const msg = document.getElementById("reserveMessage");
+  border-top: 1px solid rgba(148, 163, 184, 0.3);
+  font-size: 0.8rem;
+  color: #1f2937;
+}
+
 .campus-availability {
-  display: flex;User) {
-  flex-direction: column;ログインが必要です。";
-  gap: 0.15rem;Name = "message error";
-}     return;}
-    }
-.availability-label {sId) {
-  font-size: 0.7rem;t = "キャンパスを選び直してください。";
-  color: var(--muted);"message error";--muted);
-  text-transform: uppercase;percase;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.availability-label {
+  font-size: 0.7rem;
+  color: var(--muted);
+  text-transform: uppercase;
   letter-spacing: 0.08em;
-}   if (!date || !start || !endUser) {
-      msg.textContent = "日付・開始・終了を入力してください。";
-.availability-value { "message error";-value {
-  font-weight: 600;ht: 600;
-}   }
+}
+
+.availability-value {
+  font-weight: 600;
+}
 
 .campus-action {
-  font-weight: 600;rId) {: 600;
-  color: var(--accent); "車種を選択してください。";or: var(--accent);
-}     msg.className = "message error";}
-      return;
+  font-weight: 600;
+  color: var(--accent);
+}
+
 .selected-campus {
   margin: 1.2rem 0 0;
-  font-size: 0.88rem;timeToMinutes(start);
-  color: var(--muted); timeToMinutes(endUser);--muted);
-}   const endWithGapMin = endUserMin + RESERVATION_BUFFER_MINUTES;
+  font-size: 0.88rem;
+  color: var(--muted);
+}
 
-/* ====== 日時選択 ====== */ilable(date, currentCampusId, startMin, endWithGapMin);
+/* ====== 日時選択 ====== */
 .schedule-card {
-  max-width: 1080px;t = "この時間帯は予約済みです。";
-  margin: 0 auto;me = "message error";  margin: 0 auto;
+  max-width: 1080px;
+  margin: 0 auto;
   display: grid;
   gap: 1.8rem;
 }
-    const car = CARS.find(c => c.id === selectedCarId);
-.schedule-header {
-  display: flex;ations = loadReservations();play: flex;
-  justify-content: space-between;content: space-between;
-  align-items: center;
-  flex-wrap: wrap;rrentCampusId,  flex-wrap: wrap;
-  gap: 1rem;
-}     startMinutes: startMin,
-      endUser,
-.schedule-chip {er,
-  display: inline-flex;thGapMin,nline-flex;
-  align-items: center;tUser.name,
-  gap: 0.6rem;currentUser.studentId,
-  border-radius: 999px;id : null,9px;
-  padding: 0.45rem 1.2rem;ame : null,
-  background: rgba(37, 99, 235, 0.12);12);
-  color: var(--accent);
-  font-weight: 600;s(reservations);
-}
-    msg.textContent = "予約しました。";
-.chip-name {sName = "message ok";ame {
-  font-size: 0.9rem;nList(date, currentCampusId);
-}   renderSideReservations();}
 
-.chip-distance {了後非表示に
-  font-size: 0.82rem;);
-  color: var(--muted);
-}   // 予約完了モーダルを表示（処理中オーバーレイを1.5秒表示）}
-    const modal = document.getElementById("reservationModal");
-.schedule-intro h2 {= document.getElementById("reservationModalDesc");
-  margin: 0;Btn = document.getElementById("okReservationModal");  margin: 0;
-  font-size: 1.3rem; document.getElementById("closeReservationModal");
+.schedule-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
-    // 処理中オーバーレイを作って1.5秒表示してからモーダルを開く
-.schedule-layout {ng = document.createElement("div");
-  display: grid;d = "processingOverlay";
-  gap: 1.5rem;.setAttribute("role", "status");  gap: 1.5rem;
-}   processing.style.position = "fixed";
-    processing.style.inset = "0";
-@media (min-width: 880px) {y = "flex";
-  .schedule-layout {.alignItems = "center";
-    /* 左カラムをやや狭く（約0.7比）に調整 */ontent = "center";
-    grid-template-columns: 0.7fr 1.3fr;(255,255,255,0.9)";1.3fr;
-    gap: 2.2rem;tyle.zIndex = "9999";
-  } processing.innerHTML = `
-}     <div style="text-align:center;">
-        <div style="font-size:18px;margin-bottom:8px;">読み込み中…</div>
-/* サマリーにキャンパス画像を表示するためのレイアウト調整 */tyle="width:36px;height:36px;border:4px solid #ddd;border-top-color:#333;border-radius:50%;animation:spin 1s linear infinite"></div>
+
+.schedule-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  border-radius: 999px;
+  padding: 0.45rem 1.2rem;
+  background: rgba(37, 99, 235, 0.12);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.chip-name {
+  font-size: 0.9rem;
+}
+
+.chip-distance {
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.schedule-intro h2 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.schedule-layout {
+  display: grid;
+  gap: 1.5rem;
+}
+
+@media (min-width: 880px) {
+  .schedule-layout {
+    /* 左カラムをやや狭く（約0.7比）に調整 */
+    grid-template-columns: 0.7fr 1.3fr;
+    gap: 2.2rem;
+  }
+}
+
+/* サマリーにキャンパス画像を表示するためのレイアウト調整 */
 .schedule-summary .summary-main {
   display: flex;
-  flex-direction: column;hild(processing);
+  flex-direction: column;
   gap: 0.75rem;
-  align-items: stretch;stretch;
-}   if (!document.getElementById("processingOverlayStyle")) {
-.schedule-summary .summary-image {ment("style");
-  flex: 0 0 auto;cessingOverlayStyle";  flex: 0 0 auto;
-  width: 100%;ntent = "@keyframes spin{to{transform:rotate(360deg)}}";
-  height: 160px;ead.appendChild(s);
+  align-items: stretch;
+}
+.schedule-summary .summary-image {
+  flex: 0 0 auto;
+  width: 100%;
+  height: 160px;
   border-radius: 0.8rem;
   overflow: hidden;
-  background: #fff;> {
-  border: 1px solid rgba(148,163,184,0.12);.parentNode.removeChild(processing);4,0.12);
-}     if (modal && modalDesc) {
-.schedule-summary .summary-image img {urrentCampusId);.schedule-summary .summary-image img {
-  width: 100%;campusName = campus ? campus.name : "";
-  height: 100%;eof formatDateForDisplay === "function") {
-  object-fit: cover;textContent = `${formatDateForDisplay(date)} ${start} - ${endUser} に${campusName}で${car ? car.name + "（" + car.type + "）" : ""}の予約が完了しました。`;
-  display: block;
-}         modalDesc.textContent = `予約が完了しました。 ${date} ${start}-${endUser} ${campusName}`;
-.schedule-summary .summary-body {
-  flex: 1;dal.classList.add("open");
-}       modal.setAttribute("aria-hidden", "false");
-        if (okBtn) okBtn.focus(); else if (closeBtn) closeBtn.focus();
-/* 車種選択リストを横2列にして3行で表示 */
-#carList {0);
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.9rem;m;
-  list-style: none;addEventListener("change", (e) => { none;
-  padding: 0;rveMessages();ding: 0;
-  margin: 0.6rem 0 0;Id) {  margin: 0.6rem 0 0;
-}     renderReservationList(e.target.value, currentCampusId);
-    }
-/* 車種カード：画像を小さくして本文中に挟むレイアウト */
-.car-card {
-  padding: 0.6rem;ations();
-  display: block;mpusInfo();play: block;
-  min-height: 0;ionList("", "");-height: 0;
-  overflow: visible;le;
+  background: #fff;
+  border: 1px solid rgba(148,163,184,0.12);
 }
-// 予約完了モーダルのイベント設定
-.car-card .campus-card-body {l() {
-  display: flex;document.getElementById("reservationModal");isplay: flex;
-  flex-direction: column;ex-direction: column;
-  gap: 0.45rem; document.getElementById("okReservationModal");
-  padding: 0.65rem 0.9rem;t.getElementById("closeReservationModal");
-}
-  const close = () => {
-/* 画像を本文中（行の間）に表示、幅は控えめに */"open");
-.car-image-wrap {ibute("aria-hidden", "true");
-  width: 100%;00%;
-  height: 72px; /* 少し小さく */
-  border-radius: 0.6rem;entListener("click", close);
-  overflow: hidden;seBtn.addEventListener("click", close);
-  background: #f8fafc;er("click", (e) => {ckground: #f8fafc;
-  position: relative;modal) close();  position: relative;
-  align-self: stretch;
-} window.addEventListener("keydown", (e) => {
-.car-image-wrap img {cape" && modal.classList.contains("open")) {
+.schedule-summary .summary-image img {
   width: 100%;
   height: 100%;
-  object-fit: contain; /* 切り抜きではなく全体を表示 */
-  object-position: center;
-  display: block; right: 0.5rem;
-}  padding: 0.2rem 0.5rem;
-rem;
-/* リボン（小サイズ）調整：色を赤、表示を2倍に */
-.campus-ribbon.small,
-.unavailable-ribbon {トが見切れないように余白調整 */
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem; font-size: 0.98rem;
-  background: var(--danger);  font-weight: 700;
-  color: #fff;
-  padding: 0.35rem 0.6rem;
-  font-size: 1.24rem; /* 既存0.62rem の 約2倍 */
-  line-height: 1;継続） */
-  border-radius: 0.45rem;ction.unavailable,
-  pointer-events: none;tion.unavailable * {
-  box-shadow: 0 6px 18px rgba(185,28,28,0.12); color: var(--danger);
-}}
+  object-fit: cover;
+  display: block;
+}
+.schedule-summary .summary-body {
+  flex: 1;
+}
 
-/* 予約済み表示は赤文字（既存指定を尊重） */まま） */
+/* 車種選択リストを横2列にして3行で表示 */
+#carList {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.9rem;
+  list-style: none;
+  padding: 0;
+  margin: 0.6rem 0 0;
+}
+
+/* 車種カード：画像を小さくして本文中に挟むレイアウト */
+.car-card {
+  padding: 0.6rem;
+  display: block;
+  min-height: 0;
+  overflow: visible;
+}
+
+.car-card .campus-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding: 0.65rem 0.9rem;
+}
+
+/* 画像を本文中（行の間）に表示、幅は控えめに */
+.car-image-wrap {
+  width: 100%;
+  height: 88px;
+  border-radius: 0.6rem;
+  overflow: hidden;
+  background: #f8fafc;
+  position: relative;
+  align-self: stretch;
+}
+.car-image-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* リボン（小サイズ）調整 */
+.campus-ribbon.small {
+  top: 0.5rem;
+  right: 0.5rem;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.62rem;
+}
+
+/* 車カードのタイトルとテキストが見切れないように余白調整 */
+.car-title {
+  margin: 0;
+  font-size: 0.98rem;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+/* 予約済み表示を赤文字に（既存セレクタ継続） */
 .car-card .campus-action.unavailable,
 .car-card .campus-action.unavailable * {
   color: var(--danger);
 }
 
 /* 小画面でも2列崩れないように調整（#carList のグリッドはそのまま） */
-#carList .campus-card {ed;
-  height: auto; inset: 0;
-}  display: none;
+#carList .campus-card {
+  height: auto;
+}
 
-/* ====== 予約完了モーダル ====== */y-content: center;
-.modal {(15, 23, 42, 0.45);
-  position: fixed;1000;
+/* ====== 予約完了モーダル ====== */
+.modal {
+  position: fixed;
   inset: 0;
   display: none;
   align-items: center;
   justify-content: center;
   background: rgba(15, 23, 42, 0.45);
   z-index: 1000;
-  padding: 1rem; width: min(90vw, 480px);
-}  padding: 1.4rem 1.6rem;
+  padding: 1rem;
+}
 
-.modal.open { display: flex; }}
+.modal.open { display: flex; }
 
-.modal-content { 0.6rem; font-size: 1.2rem; }
-  width: min(90vw, 480px); 1rem; color: var(--muted); }
-  padding: 1.4rem 1.6rem;ay: flex; justify-content: flex-end; gap: 0.6rem; }
+.modal-content {
+  width: min(90vw, 480px);
+  padding: 1.4rem 1.6rem;
   border-radius: 1rem;
-}/* 追加：車種選択用の最小スタイル */
+}
 
 .modal-title { margin: 0 0 0.6rem; font-size: 1.2rem; }
 .modal-text { margin: 0 0 1rem; color: var(--muted); }
-.modal-actions { display: flex; justify-content: flex-end; gap: 0.6rem; }}
+.modal-actions { display: flex; justify-content: flex-end; gap: 0.6rem; }
 
 /* 追加：車種選択用の最小スタイル */
 #carSelection {
   padding: 0.8rem;
   border-radius: 0.9rem;
-}.car-card .campus-image {
- 180px;
-.car-card {/ 3;
+}
+
+.car-card {
   cursor: pointer;
 }
 
-.car-card .campus-image {ba(37, 99, 235, 0.75);
-  flex: 0 0 180px;0px rgba(37, 99, 235, 0.12);
+.car-card .campus-image {
+  flex: 0 0 180px;
   aspect-ratio: 4 / 3;
 }
-keyframesはスクリプトで追加） */
-.car-card.selected {"] {
+
+.car-card.selected {
   border-color: rgba(37, 99, 235, 0.75);
   box-shadow: 0 18px 40px rgba(37, 99, 235, 0.12);
-}/* 処理中オーバーレイのスタイル補助（keyframesはスクリプトで追加） */#processingOverlay div[aria-hidden="true"] {  box-sizing: border-box;}
+}
+
+/* 処理中オーバーレイのスタイル補助（keyframesはスクリプトで追加） */
+#processingOverlay div[aria-hidden="true"] {
+  box-sizing: border-box;
+}
