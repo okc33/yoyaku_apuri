@@ -897,19 +897,26 @@ select:focus {
 .picker {
   transform: scale(1.5);
   transform-origin: top left;
-  /* 拡大分だけスペースを確保（必要なら調整） */
-  margin-bottom: 0.75rem;
-  /* 拡大後も要素内のインタラクションが正しく動作するように */
+  display: inline-block; /* レイアウト崩れを抑える */
   pointer-events: auto;
 }
 
-/* モバイル等でレイアウトが窮屈な場合は縮小（必要に応じてブレークポイントを追加） */
-@media (max-width: 640px) {
-  .schedule-calendar,
-  .date-picker,
-  .calendar,
-  .flatpickr-calendar,
-  .picker {
-    transform: scale(1.15);
-  }
+/* 入力欄（日時セレクト）の視認性を向上 */
+#reserveDate,
+#startTime,
+#endTimeUser {
+  font-size: 1.05rem;
+  padding: 0.5rem 0.7rem;
+}
+
+/* 拡大時に親要素で切れないようにする（既存の overflow: visible を補強） */
+.schedule-layout,
+.schedule-card {
+  overflow: visible;
+}
+
+/* 選択中のキャンパスカードの枠線を太めにして目立たせる（上書き） */
+.campus-card.selected {
+  border: 2px solid rgba(37, 99, 235, 0.85); /* 太さを 2px に */
+  box-shadow: 0 28px 60px rgba(37, 99, 235, 0.25);
 }
