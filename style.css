@@ -992,3 +992,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .campus-card:focus-visible .campus-ribbon {
   box-shadow: 0 6px 18px rgba(37,99,235,0.12);
 }
+
+/* 選択中キャンパスの右側（本文）を淡い青にして入力選択色と揃える */
+.campus-card.selected .campus-card-body {
+  background-color: rgba(37, 99, 235, 0.06); /* 学籍番号入力の選択色に合わせた淡い青 */
+  transition: background-color 220ms ease;
+}
+
+/* フォーカス時も同様の視覚効果を付与（キーボード操作対応） */
+.campus-card:focus-visible .campus-card-body {
+  background-color: rgba(37, 99, 235, 0.04);
+}
