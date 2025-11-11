@@ -390,12 +390,9 @@ function createCarCard(car) {
   // 表示名を車種ラベルにする（自動運転車 / EV車 / 大型車）
   const displayTypeLabel = car.type === "自動運転" ? "自動運転車" : (car.type === "EV" ? "EV車" : "大型車");
 
-  // 画像を「文字行の間」に配置するため、ボディ内に順序を置く
+  // 「上・下の余分なラベル」を削除し、中央の黒文字（.car-title）のみを残す
   li.innerHTML = `
     <div class="campus-card-body">
-      <div class="campus-card-header">
-        <span class="campus-badge">${displayTypeLabel}</span>
-      </div>
       <h3 class="car-title">${displayTypeLabel}</h3>
 
       <div class="car-image-wrap">
@@ -403,7 +400,6 @@ function createCarCard(car) {
         ${car.available ? '' : '<span class="campus-ribbon small">予約不可</span>'}
       </div>
 
-      <p class="campus-distance">${car.type}</p>
       <div class="campus-footer">
         <div class="campus-action ${car.available ? '' : 'unavailable'}">${car.available ? '選択可能' : '予約済み'}</div>
       </div>

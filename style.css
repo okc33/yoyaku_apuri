@@ -776,13 +776,6 @@ select:focus {
   overflow: visible;
 }
 
-.car-card .campus-card-body {
-  display: flex;
-  flex-direction: column;
-  gap: 0.45rem;
-  padding: 0.65rem 0.9rem;
-}
-
 /* 画像を本文中（行の間）に表示、幅は控えめに */
 .car-image-wrap {
   width: 100%;
@@ -792,11 +785,17 @@ select:focus {
   background: #f8fafc;
   position: relative;
   align-self: stretch;
+
+  /* 画像を中央に寄せて上下に余白ができても切れないようにする */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .car-image-wrap img {
-  width: 100%;
+  width: auto;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;      /* cover から contain に変更（上下が切れない） */
+  object-position: center;
   display: block;
 }
 
@@ -804,16 +803,23 @@ select:focus {
 .campus-ribbon.small {
   top: 0.5rem;
   right: 0.5rem;
-  padding: 0.2rem 0.5rem;
-  font-size: 0.62rem;
+  padding: 0.25rem 0.55rem;
+  font-size: 1.24rem;       /* 既存 0.62rem の約2倍 */
+  font-weight: 700;
+  background: var(--danger); /* 赤 */
+  color: #ffffff;
+  border-radius: 0.45rem;
+  line-height: 1;
 }
 
-/* 車カードのタイトルとテキストが見切れないように余白調整 */
+/* 車タイトル（中央の黒文字）が目立つよう微調整 */
 .car-title {
   margin: 0;
-  font-size: 0.98rem;
+  font-size: 1rem;
   font-weight: 700;
-  line-height: 1.15;
+  color: #111827;
+  text-align: center;
+  line-height: 1.2;
 }
 
 /* 予約済み表示を赤文字に（既存セレクタ継続） */
