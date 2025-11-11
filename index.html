@@ -144,6 +144,14 @@
             <button id="btnCheck" type="button" class="btn">空き状況を確認</button>
             <div id="checkResult" class="message" role="status"></div>
           </div>
+
+          <!-- 追加：車種選択フェーズ -->
+          <div id="carSelection" class="card" style="display:none; margin-top:0.8rem;">
+            <p id="carSelectionMessage" class="note">車種を選択してください（必須）</p>
+            <ul id="carList" class="campus-list" role="list"></ul>
+            <p id="selectedCarInfo" class="note">車種を選択していません。</p>
+          </div>
+
           <div class="field">
             <button id="btnReserve" type="button" class="btn primary">この内容で予約</button>
             <div id="reserveMessage" class="message" role="status"></div>

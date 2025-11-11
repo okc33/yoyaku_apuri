@@ -84,9 +84,21 @@ const CAMPUSES = [
   },
 ];
 
+// 追加：車種定義（6台）
+// 自動運転: 1台、EV: 2台、大型車: 3台
+const CARS = [
+  { id: "car-blue", image: "img/blue.png", name: "Blue", type: "自動運転", typeId: 1, available: true },
+  { id: "car-red", image: "img/red.png", name: "Red", type: "EV", typeId: 2, available: false }, // EVのうち1台は埋まっている
+  { id: "car-green", image: "img/green.png", name: "Green", type: "EV", typeId: 2, available: true },
+  { id: "car-pink", image: "img/pink.png", name: "Pink", type: "大型車", typeId: 3, available: false }, // 大型車のうち1台は埋まっている
+  { id: "car-purple", image: "img/purple.png", name: "Purple", type: "大型車", typeId: 3, available: true },
+  { id: "car-yellow", image: "img/yellow.png", name: "Yellow", type: "大型車", typeId: 3, available: true },
+];
+
 let currentUser = null;
 let currentCampusId = null;
 let selectedCampusId = null;
+let selectedCarId = null; // 追加：選択された車
 
 const MINUTES_PER_DAY = 24 * 60;
 const START_MINUTES = 7 * 60;
@@ -357,6 +369,43 @@ function createCampusCard(campus) {
   return card;
 }
 
+// 追加：車種カード作成
+function createCarCard(car) {
+  const li = document.createElement("li");
+  li.className = "campus-card car-card";
+  li.dataset.id = car.id;
+  li.setAttribute("role", "button");
+  li.setAttribute("tabindex", "0");
+  li.innerHTML = `
+    <div class="campus-image">
+      <img src="${car.image}" alt="${car.name}の写真" loading="lazy" />
+      ${car.available ? '' : '<span class="campus-ribbon" style="background:rgba(185,28,28,0.9)">予約不可</span>'}
+    </div>
+    <div class="campus-card-body">
+      <div class="campus-card-header">
+        <span class="campus-badge">${car.type}</span>
+      </div>
+      <h3>${car.name}</h3>
+      <p class="campus-distance">${car.type}</p>
+      <div class="campus-footer">
+        <div class="campus-action">${car.available ? '選択可能' : '予約済み'}</div>
+      </div>
+    </div>
+  `;
+  if (car.available) {
+    li.addEventListener("click", () => selectCar(li));
+    li.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        selectCar(li);
+      }
+    });
+  } else {
+    li.setAttribute("aria-disabled", "true");
+  }
+  return li;
+}
+
 function updateSelectedCampusDisplay() {
   const selectedText = document.getElementById("selectedCampus");
   const nextBtn = document.getElementById("btnCampusNext");
@@ -381,20 +430,68 @@ function selectCampus(card) {
   updateSelectedCampusDisplay();
 }
 
+function renderCarSelection() {
+  const container = document.getElementById("carSelection");
+  const list = document.getElementById("carList");
+  const carMessage = document.getElementById("carSelectionMessage");
+  if (!container || !list) return;
+  list.innerHTML = "";
+  selectedCarId = null;
+  container.style.display = "block";
+  carMessage.textContent = "車種を選択してください（必須）";
+
+  CARS.forEach(car => {
+    const card = createCarCard(car);
+    list.appendChild(card);
+  });
+  updateCarSelectionDisplay();
+}
+
+function hideCarSelection() {
+  const container = document.getElementById("carSelection");
+  if (!container) return;
+  container.style.display = "none";
+  selectedCarId = null;
+  updateCarSelectionDisplay();
+}
+
+function selectCar(cardEl) {
+  document.querySelectorAll(".car-card.selected").forEach(el => el.classList.remove("selected"));
+  cardEl.classList.add("selected");
+  selectedCarId = cardEl.dataset.id;
+  updateCarSelectionDisplay();
+}
+
+function updateCarSelectionDisplay() {
+  const info = document.getElementById("selectedCarInfo");
+  const btnReserveEl = document.getElementById("btnReserve");
+  if (!info || !btnReserveEl) return;
+  if (!selectedCarId) {
+    info.textContent = "車種を選択していません。";
+    btnReserveEl.disabled = true;
+  } else {
+    const car = CARS.find(c => c.id === selectedCarId);
+    info.textContent = car ? `${car.name}（${car.type}）を選択中` : "車種を選択していません。";
+    btnReserveEl.disabled = false;
+  }
+}
+
 window.addEventListener("DOMContentLoaded", () => {
   const campusList = document.getElementById("campusList");
   campusList.setAttribute("aria-describedby", "selectedCampus");
   CAMPUSES.forEach(campus => {
     const card = createCampusCard(campus);
     campusList.appendChild(card);
-
+    // クリックで選択して次へ
     card.addEventListener("click", () => {
       selectCampus(card);
+      currentCampusId = card.dataset.id;
     });
-    card.addEventListener("keydown", e => {
+    card.addEventListener("keydown", (e) => {
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
         selectCampus(card);
+        currentCampusId = card.dataset.id;
       }
     });
   });
@@ -406,10 +503,11 @@ window.addEventListener("DOMContentLoaded", () => {
   const endSelect = document.getElementById("endTimeUser");
   const reserveDateInput = document.getElementById("reserveDate");
 
-  startSelect.addEventListener("change", () => {
-    limitEndTimes();
-    resetReserveMessages();
-  });
+  // 追加：初期は車選択非表示
+  const carSelectionContainer = document.getElementById("carSelection");
+  if (carSelectionContainer) carSelectionContainer.style.display = "none";
+
+  startSelect.addEventListener("change", () => limitEndTimes());
   endSelect.addEventListener("change", resetReserveMessages);
   limitEndTimes();
 
@@ -505,12 +603,14 @@ window.addEventListener("DOMContentLoaded", () => {
     if (!currentCampusId) {
       result.textContent = "キャンパスを選び直してください。";
       result.className = "message error";
+      hideCarSelection();
       return;
     }
 
     if (!date || !start || !endUser) {
       result.textContent = "日付・開始・終了を入力してください。";
       result.className = "message error";
+      hideCarSelection();
       return;
     }
 
@@ -520,11 +620,13 @@ window.addEventListener("DOMContentLoaded", () => {
 
     const ok = isTimeAvailable(date, currentCampusId, startMin, endWithGapMin);
     if (ok) {
-      result.textContent = "予約できます。";
+      result.textContent = "予約できます。車種を選択してください。";
       result.className = "message ok";
+      renderCarSelection();
     } else {
       result.textContent = "すでに予約があります。別の時間にしてください。";
       result.className = "message error";
+      hideCarSelection();
     }
   });
 
@@ -551,6 +653,13 @@ window.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    // 車選択必須
+    if (!selectedCarId) {
+      msg.textContent = "車種を選択してください。";
+      msg.className = "message error";
+      return;
+    }
+
     const startMin = timeToMinutes(start);
     const endUserMin = timeToMinutes(endUser);
     const endWithGapMin = endUserMin + RESERVATION_BUFFER_MINUTES;
@@ -561,6 +670,8 @@ window.addEventListener("DOMContentLoaded", () => {
       msg.className = "message error";
       return;
     }
+
+    const car = CARS.find(c => c.id === selectedCarId);
 
     const reservations = loadReservations();
     reservations.push({
@@ -573,6 +684,9 @@ window.addEventListener("DOMContentLoaded", () => {
       endMinutes: endWithGapMin,
       userName: currentUser.name,
       userId: currentUser.studentId,
+      carId: car ? car.id : null,
+      carName: car ? car.name : null,
+      carType: car ? car.type : null,
     });
     saveReservations(reservations);
 
@@ -581,7 +695,10 @@ window.addEventListener("DOMContentLoaded", () => {
     renderReservationList(date, currentCampusId);
     renderSideReservations();
 
-    // 予約完了モーダルを表示
+    // 車選択フェーズは完了後非表示に
+    hideCarSelection();
+
+    // 予約完了モーダルを表示（処理中オーバーレイを1.5秒表示）
     const modal = document.getElementById("reservationModal");
     const modalDesc = document.getElementById("reservationModalDesc");
     const okBtn = document.getElementById("okReservationModal");
@@ -620,7 +737,7 @@ window.addEventListener("DOMContentLoaded", () => {
         const campus = getCampusById(currentCampusId);
         const campusName = campus ? campus.name : "";
         if (typeof formatDateForDisplay === "function") {
-          modalDesc.textContent = `${formatDateForDisplay(date)} ${start} - ${endUser} に${campusName}で予約が完了しました。`;
+          modalDesc.textContent = `${formatDateForDisplay(date)} ${start} - ${endUser} に${campusName}で${car ? car.name + "（" + car.type + "）" : ""}の予約が完了しました。`;
         } else {
           modalDesc.textContent = `予約が完了しました。 ${date} ${start}-${endUser} ${campusName}`;
         }
