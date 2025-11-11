@@ -881,3 +881,35 @@ select:focus {
 #processingOverlay div[aria-hidden="true"] {
   box-sizing: border-box;
 }
+
+/* カレンダーを1.5倍に拡大（必要に応じてセレクタを調整） */
+.schedule-card,
+.schedule-layout {
+  /* 拡大時にはみ出しても表示されるように */
+  overflow: visible;
+}
+
+/* 共通的なカレンダーセレクタ（プロジェクトに合わせて追加/変更してください） */
+.schedule-calendar,
+.date-picker,
+.calendar,
+.flatpickr-calendar,
+.picker {
+  transform: scale(1.5);
+  transform-origin: top left;
+  /* 拡大分だけスペースを確保（必要なら調整） */
+  margin-bottom: 0.75rem;
+  /* 拡大後も要素内のインタラクションが正しく動作するように */
+  pointer-events: auto;
+}
+
+/* モバイル等でレイアウトが窮屈な場合は縮小（必要に応じてブレークポイントを追加） */
+@media (max-width: 640px) {
+  .schedule-calendar,
+  .date-picker,
+  .calendar,
+  .flatpickr-calendar,
+  .picker {
+    transform: scale(1.15);
+  }
+}
