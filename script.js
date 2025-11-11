@@ -586,18 +586,49 @@ window.addEventListener("DOMContentLoaded", () => {
     const modalDesc = document.getElementById("reservationModalDesc");
     const okBtn = document.getElementById("okReservationModal");
     const closeBtn = document.getElementById("closeReservationModal");
-    if (modal && modalDesc) {
-      const campus = getCampusById(currentCampusId);
-      const campusName = campus ? campus.name : "";
-      if (typeof formatDateForDisplay === "function") {
-        modalDesc.textContent = `${formatDateForDisplay(date)} ${start} - ${endUser} に${campusName}で予約が完了しました。`;
-      } else {
-        modalDesc.textContent = `予約が完了しました。 ${date} ${start}-${endUser} ${campusName}`;
-      }
-      modal.classList.add("open");
-      modal.setAttribute("aria-hidden", "false");
-      if (okBtn) okBtn.focus(); else if (closeBtn) closeBtn.focus();
+
+    // 処理中オーバーレイを作って1.5秒表示してからモーダルを開く
+    const processing = document.createElement("div");
+    processing.id = "processingOverlay";
+    processing.setAttribute("role", "status");
+    processing.style.position = "fixed";
+    processing.style.inset = "0";
+    processing.style.display = "flex";
+    processing.style.alignItems = "center";
+    processing.style.justifyContent = "center";
+    processing.style.background = "rgba(255,255,255,0.9)";
+    processing.style.zIndex = "9999";
+    processing.innerHTML = `
+      <div style="text-align:center;">
+        <div style="font-size:18px;margin-bottom:8px;">読み込み中…</div>
+        <div aria-hidden="true" style="width:36px;height:36px;border:4px solid #ddd;border-top-color:#333;border-radius:50%;animation:spin 1s linear infinite"></div>
+      </div>
+    `;
+    document.body.appendChild(processing);
+
+    // キーフレームがなければ追加
+    if (!document.getElementById("processingOverlayStyle")) {
+      const s = document.createElement("style");
+      s.id = "processingOverlayStyle";
+      s.textContent = "@keyframes spin{to{transform:rotate(360deg)}}";
+      document.head.appendChild(s);
     }
+
+    setTimeout(() => {
+      if (processing.parentNode) processing.parentNode.removeChild(processing);
+      if (modal && modalDesc) {
+        const campus = getCampusById(currentCampusId);
+        const campusName = campus ? campus.name : "";
+        if (typeof formatDateForDisplay === "function") {
+          modalDesc.textContent = `${formatDateForDisplay(date)} ${start} - ${endUser} に${campusName}で予約が完了しました。`;
+        } else {
+          modalDesc.textContent = `予約が完了しました。 ${date} ${start}-${endUser} ${campusName}`;
+        }
+        modal.classList.add("open");
+        modal.setAttribute("aria-hidden", "false");
+        if (okBtn) okBtn.focus(); else if (closeBtn) closeBtn.focus();
+      }
+    }, 1500);
   });
 
   // 日付切替
