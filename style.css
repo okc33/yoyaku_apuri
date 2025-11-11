@@ -741,7 +741,7 @@ select:focus {
 }
 .schedule-summary .summary-image {
   flex: 0 0 auto;
-  width: 100%;
+  width: 70%;   /* 横幅を0.7倍に */
   height: 160px;
   border-radius: 0.8rem;
   overflow: hidden;

@@ -106,6 +106,15 @@ const END_MINUTES = 21 * 60;
 const RESERVATION_BUFFER_MINUTES = 30;
 
 /* ===== 共通処理 ===== */
+
+// 追加：車種ラベルを一元化して常に「〜車」を付ける
+function getCarTypeLabel(type) {
+  if (!type) return "";
+  if (type === "自動運転") return "自動運転車";
+  if (type === "EV") return "EV車";
+  return "大型車";
+}
+
 function showPage(id) {
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
   document.getElementById(id).classList.add("active");
@@ -191,8 +200,9 @@ function renderReservationList(dateStr, campusId) {
       const campus = getCampusById(reservation.campusId);
       const campusName = campus ? campus.name : reservation.campusId;
       const li = document.createElement("li");
+      // 日付を追加（formatDateForDisplay を使用）と車種表示
       li.innerHTML = `
-        <div class="resv-time">${reservation.start} - ${reservation.endUser}</div>
+        <div class="resv-time">${formatDateForDisplay(reservation.date)} ${reservation.start} - ${reservation.endUser}</div>
         <div class="resv-meta">
           <span class="resv-campus">${campusName}</span>
           <span class="resv-car">${reservation.carType || ""}</span>
@@ -225,7 +235,7 @@ function renderSideReservations() {
         <div class="side-resv-text">
           <span class="side-resv-date">${formatDateForDisplay(r.date)}</span>
           <span class="side-resv-time">${r.start} - ${r.endUser}</span>
-          <span class="side-resv-campus">${campusName}</span>
+          <span class="side-resv-car">${r.carType || ""}</span>
         </div>
         ${
           campus
@@ -387,10 +397,8 @@ function createCarCard(car) {
   li.setAttribute("role", "button");
   li.setAttribute("tabindex", "0");
 
-  // 表示名を車種ラベルにする（自動運転車 / EV車 / 大型車）
-  const displayTypeLabel = car.type === "自動運転" ? "自動運転車" : (car.type === "EV" ? "EV車" : "大型車");
+  const displayTypeLabel = getCarTypeLabel(car.type);
 
-  // 「上・下の余分なラベル」を削除し、中央の黒文字（.car-title）のみを残す
   li.innerHTML = `
     <div class="campus-card-body">
       <h3 class="car-title">${displayTypeLabel}</h3>
@@ -485,8 +493,8 @@ function updateCarSelectionDisplay() {
     btnReserveEl.disabled = true;
   } else {
     const car = CARS.find(c => c.id === selectedCarId);
-    // 表示を車名ではなく「車種」（例：大型車）に変更
-    info.textContent = car ? `${car.type}を選択中` : "車種を選択していません。";
+    // 車名ではなく「車種（〜車）」表記に変更
+    info.textContent = car ? `${getCarTypeLabel(car.type)}を選択中` : "車種を選択していません。";
     btnReserveEl.disabled = false;
   }
 }
@@ -701,7 +709,8 @@ window.addEventListener("DOMContentLoaded", () => {
       userId: currentUser.studentId,
       carId: car ? car.id : null,
       carName: car ? car.name : null,
-      carType: car ? car.type : null,
+      // carType は常に「〜車」表記を保存
+      carType: car ? getCarTypeLabel(car.type) : null,
     });
     saveReservations(reservations);
 
@@ -752,7 +761,8 @@ window.addEventListener("DOMContentLoaded", () => {
         const campus = getCampusById(currentCampusId);
         const campusName = campus ? campus.name : "";
         if (typeof formatDateForDisplay === "function") {
-          modalDesc.textContent = `${formatDateForDisplay(date)} ${start} - ${endUser} に${campusName}で${car ? car.type : ""}の予約が完了しました。`;
+          // モーダルの車表記も「〜車」に統一
+          modalDesc.textContent = `${formatDateForDisplay(date)} ${start} - ${endUser} に${campusName}で${car ? getCarTypeLabel(car.type) : ""}の予約が完了しました。`;
         } else {
           modalDesc.textContent = `予約が完了しました。 ${date} ${start}-${endUser} ${campusName}`;
         }
