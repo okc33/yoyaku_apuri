@@ -188,11 +188,14 @@ function renderReservationList(dateStr, campusId) {
   reservations
     .sort((a, b) => a.startMinutes - b.startMinutes)
     .forEach(reservation => {
+      const campus = getCampusById(reservation.campusId);
+      const campusName = campus ? campus.name : reservation.campusId;
       const li = document.createElement("li");
       li.innerHTML = `
-        <div class="reservation-meta">
-          <span class="reservation-time">${reservation.start} - ${reservation.endUser}</span>
-          <span class="reservation-name">${reservation.userName}</span>
+        <div class="resv-time">${reservation.start} - ${reservation.endUser}</div>
+        <div class="resv-meta">
+          <span class="resv-campus">${campusName}</span>
+          <span class="resv-car">${reservation.carType || ""}</span>
         </div>
       `;
       list.appendChild(li);
@@ -264,15 +267,22 @@ function updateReserveCampusInfo() {
         <span class="reviews">(${campus.reviews}件)</span>
       </div>
     </div>
-    <h3 class="summary-title">${campus.name}</h3>
-    <p class="summary-distance">${campus.distance}</p>
-    <p class="summary-address">${campus.address}</p>
-    <ul class="summary-features">
-      ${campus.features.map(f => `<li>${f}</li>`).join("")}
-    </ul>
-    <div class="summary-availability">
-      <span class="label">${campus.availabilityLabel}</span>
-      <span class="value">${campus.availabilityValue}</span>
+    <div class="summary-main">
+      <div class="summary-image">
+        <img src="${campus.image}" alt="${campus.name}の写真" loading="lazy" />
+      </div>
+      <div class="summary-body">
+        <h3 class="summary-title">${campus.name}</h3>
+        <p class="summary-distance">${campus.distance}</p>
+        <p class="summary-address">${campus.address}</p>
+        <ul class="summary-features">
+          ${campus.features.map(f => `<li>${f}</li>`).join("")}
+        </ul>
+        <div class="summary-availability">
+          <span class="label">${campus.availabilityLabel}</span>
+          <span class="value">${campus.availabilityValue}</span>
+        </div>
+      </div>
     </div>
   `;
 }
@@ -369,26 +379,30 @@ function createCampusCard(campus) {
   return card;
 }
 
-// 追加：車種カード作成
+// 追加：車種カード作成（表示文言変更：車名→車種名表記）
 function createCarCard(car) {
   const li = document.createElement("li");
   li.className = "campus-card car-card";
   li.dataset.id = car.id;
   li.setAttribute("role", "button");
   li.setAttribute("tabindex", "0");
+
+  // 表示名を車種ラベルにする（自動運転車 / EV車 / 大型車）
+  const displayTypeLabel = car.type === "自動運転" ? "自動運転車" : (car.type === "EV" ? "EV車" : "大型車");
+
   li.innerHTML = `
     <div class="campus-image">
-      <img src="${car.image}" alt="${car.name}の写真" loading="lazy" />
+      <img src="${car.image}" alt="${displayTypeLabel}の写真" loading="lazy" />
       ${car.available ? '' : '<span class="campus-ribbon" style="background:rgba(185,28,28,0.9)">予約不可</span>'}
     </div>
     <div class="campus-card-body">
       <div class="campus-card-header">
-        <span class="campus-badge">${car.type}</span>
+        <span class="campus-badge">${displayTypeLabel}</span>
       </div>
-      <h3>${car.name}</h3>
+      <h3>${displayTypeLabel}</h3>
       <p class="campus-distance">${car.type}</p>
       <div class="campus-footer">
-        <div class="campus-action">${car.available ? '選択可能' : '予約済み'}</div>
+        <div class="campus-action ${car.available ? '' : 'unavailable'}">${car.available ? '選択可能' : '予約済み'}</div>
       </div>
     </div>
   `;
