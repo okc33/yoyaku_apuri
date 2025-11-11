@@ -735,11 +735,14 @@ select:focus {
 /* サマリーにキャンパス画像を表示するためのレイアウト調整 */
 .schedule-summary .summary-main {
   display: flex;
-  gap: 0.9rem;
-  align-items: flex-start;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: stretch;
 }
 .schedule-summary .summary-image {
-  flex: 0 0 42%;
+  flex: 0 0 auto;
+  width: 100%;
+  height: 160px;
   border-radius: 0.8rem;
   overflow: hidden;
   background: #fff;
@@ -765,47 +768,64 @@ select:focus {
   margin: 0.6rem 0 0;
 }
 
-/* 予約済み表示を赤文字に */
+/* 車種カード：画像を小さくして本文中に挟むレイアウト */
+.car-card {
+  padding: 0.6rem;
+  display: block;
+  min-height: 0;
+  overflow: visible;
+}
+
+.car-card .campus-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding: 0.65rem 0.9rem;
+}
+
+/* 画像を本文中（行の間）に表示、幅は控えめに */
+.car-image-wrap {
+  width: 100%;
+  height: 88px;
+  border-radius: 0.6rem;
+  overflow: hidden;
+  background: #f8fafc;
+  position: relative;
+  align-self: stretch;
+}
+.car-image-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* リボン（小サイズ）調整 */
+.campus-ribbon.small {
+  top: 0.5rem;
+  right: 0.5rem;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.62rem;
+}
+
+/* 車カードのタイトルとテキストが見切れないように余白調整 */
+.car-title {
+  margin: 0;
+  font-size: 0.98rem;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+/* 予約済み表示を赤文字に（既存セレクタ継続） */
 .car-card .campus-action.unavailable,
 .car-card .campus-action.unavailable * {
   color: var(--danger);
 }
 
-/* 予約一覧のカード（右カラム）の表示調整 */
-#reservationList li {
-  border: 1px solid rgba(148, 163, 184, 0.35);
-  border-radius: 0.9rem;
-  padding: 0.75rem 0.9rem;
-  background: #ffffff;
-  display: grid;
-  gap: 0.3rem;
-  margin-bottom: 0.65rem;
+/* 小画面でも2列崩れないように調整（#carList のグリッドはそのまま） */
+#carList .campus-card {
+  height: auto;
 }
-
-/* 予約表示の中身 */
-#reservationList li .resv-time {
-  font-weight: 700;
-  font-size: 0.95rem;
-}
-#reservationList li .resv-meta {
-  display: flex;
-  gap: 0.6rem;
-  align-items: center;
-  color: var(--muted);
-  font-size: 0.88rem;
-}
-#reservationList li .resv-campus {
-  color: var(--accent);
-  font-weight: 700;
-}
-#reservationList li .resv-car {
-  color: #0f172a;
-  font-weight: 600;
-}
-
-/* ...existing code... */
-
-@media (max-width: 600px) { .login-page { padding-top: 1.7rem; } }
 
 /* ====== 予約完了モーダル ====== */
 .modal {

@@ -390,22 +390,26 @@ function createCarCard(car) {
   // 表示名を車種ラベルにする（自動運転車 / EV車 / 大型車）
   const displayTypeLabel = car.type === "自動運転" ? "自動運転車" : (car.type === "EV" ? "EV車" : "大型車");
 
+  // 画像を「文字行の間」に配置するため、ボディ内に順序を置く
   li.innerHTML = `
-    <div class="campus-image">
-      <img src="${car.image}" alt="${displayTypeLabel}の写真" loading="lazy" />
-      ${car.available ? '' : '<span class="campus-ribbon" style="background:rgba(185,28,28,0.9)">予約不可</span>'}
-    </div>
     <div class="campus-card-body">
       <div class="campus-card-header">
         <span class="campus-badge">${displayTypeLabel}</span>
       </div>
-      <h3>${displayTypeLabel}</h3>
+      <h3 class="car-title">${displayTypeLabel}</h3>
+
+      <div class="car-image-wrap">
+        <img src="${car.image}" alt="${displayTypeLabel}の写真" loading="lazy" />
+        ${car.available ? '' : '<span class="campus-ribbon small">予約不可</span>'}
+      </div>
+
       <p class="campus-distance">${car.type}</p>
       <div class="campus-footer">
         <div class="campus-action ${car.available ? '' : 'unavailable'}">${car.available ? '選択可能' : '予約済み'}</div>
       </div>
     </div>
   `;
+
   if (car.available) {
     li.addEventListener("click", () => selectCar(li));
     li.addEventListener("keydown", e => {
