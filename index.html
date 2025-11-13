@@ -5,31 +5,6 @@
   <title>キャンパスカーシェア予約</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="style.css" />
-  <style>
-    /* サイドメニュー横幅を1.2倍に見せる（左寄せで拡張） */
-    #sideMenu {
-      transform: scaleX(1.2);
-      transform-origin: left;
-    }
-    /* 追加カード用スタイル（簡易） */
-    .side-rank-card {
-      margin: 0.6rem 1rem;
-      padding: 0.8rem;
-      background: #fff;
-      border-radius: 6px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-    }
-    .side-rank-card .rank {
-      color: #c00;
-      font-weight: 800;
-      font-size: 1.15rem;
-    }
-    .side-rank-card .hours {
-      margin-top: 0.4rem;
-      color: #333;
-      font-size: 0.95rem;
-    }
-  </style>
 </head>
 <body>
   <!-- 上部バー -->
@@ -49,7 +24,8 @@
       <div class="side-menu-block">
         <h3 class="side-menu-heading">メニュー</h3>
         <ul class="side-menu-list">
-          <li>マイページ</li>
+          <li>マイページ（ダミー）</li>
+          <li>ログアウトはリロードしてください</li>
         </ul>
       </div>
       <div class="side-menu-block">
@@ -58,15 +34,6 @@
           <li>まだ予約がありません。</li>
         </ul>
       </div>
-
-      <!-- 追加：Bランクカード -->
-      <div class="side-menu-block" aria-hidden="false">
-        <div class="side-rank-card" role="region" aria-label="利用ランク">
-          <div class="rank">Bランク</div>
-          <div class="hours">月間利用時間20時間</div>
-        </div>
-      </div>
-
     </div>
   </aside>
   <div id="overlay" class="overlay" role="presentation"></div>
