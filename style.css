@@ -220,6 +220,26 @@ a:hover {
   object-fit: cover;
 }
 
+/* Bランク領域（サイドメニュー下部） */
+.side-rank {
+  margin-top: 0.25rem; /* 予約一覧カードとの隙間を小さくする */
+  display: block;
+}
+.side-rank-image {
+  width: 100%;
+  display: block;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  border: 1px solid rgba(148,163,184,0.08);
+}
+.side-rank-note {
+  margin-top: 0.28rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+  text-align: center;
+  font-weight: 600;
+}
+
 .overlay {
   position: fixed;
   inset: 0;
