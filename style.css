@@ -183,6 +183,13 @@ a:hover {
   gap: 0.25rem;
 }
 
+/* 日付とキャンパス名を同じ行に表示するためのラッパー */
+.side-resv-top {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .side-resv-date {
   font-size: 0.75rem;
   font-weight: 600;
