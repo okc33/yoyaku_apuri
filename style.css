@@ -232,13 +232,7 @@ a:hover {
   overflow: hidden;
   border: 1px solid rgba(148,163,184,0.08);
 }
-.side-rank-note {
-  margin-top: 0.28rem;
-  font-size: 0.85rem;
-  color: var(--muted);
-  text-align: center;
-  font-weight: 600;
-}
+/* caption removed */
 
 .overlay {
   position: fixed;
