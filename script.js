@@ -234,6 +234,7 @@ function renderSideReservations() {
       item.innerHTML = `
         <div class="side-resv-text">
           <span class="side-resv-date">${formatDateForDisplay(r.date)}</span>
+          <span class="side-resv-campusname">${campusName}</span>
           <span class="side-resv-time">${r.start} - ${r.endUser}</span>
           <span class="side-resv-car">${r.carType || ""}</span>
         </div>
