@@ -138,6 +138,15 @@ a:hover {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
+/* マイページカードの縦幅を半分にする調整
+   サイドメニュー内の最初のブロック（マイページ）を対象に、
+   高さを抑えつつはみ出す場合は内部をスクロールさせない（見切れる）ようにする。
+   必要に応じて `max-height` の値を微調整してください。 */
+.side-menu-block:first-of-type {
+  max-height: 7.5rem; /* おおよそ既存の高さの半分相当（必要に応じて調整） */
+  padding: 0.5rem; /* 内側の余白を半分にして縦幅を小さくする */
+  overflow: hidden; /* 中身を見切らせる（スクロールを避ける） */
+}
 
 .side-menu-heading {
   margin: 0 0 0.65rem;
