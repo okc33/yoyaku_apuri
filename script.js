@@ -110,7 +110,7 @@ const RESERVATION_BUFFER_MINUTES = 30;
 // 追加：車種ラベルを一元化して常に「〜車」を付ける
 function getCarTypeLabel(type) {
   if (!type) return "";
-  if (type === "自動運転") return "自動運転車";
+  if (type === "自動運転") return "普通車";
   if (type === "EV") return "EV車";
   return "大型車";
 }
